@@ -1,0 +1,32 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'java'
+}
+
+group 'io.artemis'
+version '0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.artemis.Artemis'
+    }
+}
+
+dependencies {
+    implementation 'fr.inria.gforge.spoon:spoon-core:10.1.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}
