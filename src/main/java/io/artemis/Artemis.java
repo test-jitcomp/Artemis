@@ -59,8 +59,8 @@ public class Artemis {
     private static final VirtualFolder SKELETON_FOLDER = new VirtualFolder();
     static {
         final String SKL_FOLDER_NAME = "skeletons";
-        final String[] SKL_NAMES =
-                new String[] {"ForLoopSkl.java", "ExHandleSkl.java", "RedirectSkl.java"};
+        final String[] SKL_NAMES = new String[] {"LiLoopSkl.java", "SwLoopSkl.java",
+                "ExHandleSkl.java", "RedirectSkl.java"};
         ClassLoader loader = Artemis.class.getClassLoader();
         try {
             for (String sklName : SKL_NAMES) {

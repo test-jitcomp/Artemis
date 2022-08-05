@@ -8,6 +8,7 @@ import io.artemis.AxChecker;
 import io.artemis.AxLog;
 import io.artemis.AxRandom;
 import io.artemis.mut.LoopInserter;
+import io.artemis.mut.StmtWrapper;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
@@ -22,26 +23,51 @@ public class ArtemisPolicy extends MutationPolicy {
     @Override
     public void apply(CtClass<?> clazz) {
         AxRandom rand = AxRandom.getInstance();
-        LoopInserter inserter = new LoopInserter(mAx);
 
         // We never mutate initializer blocks, either static or not
         List<CtMethod<?>> methods = new ArrayList<>(clazz.getMethods());
         AxChecker.check(methods.size() > 0,
                 "No methods found in the given class: " + clazz.getQualifiedName());
 
-        CtMethod<?> meth = methods.get(rand.nextInt(methods.size()));
-        AxLog.v("Mutating method: " + clazz.getQualifiedName() + "::" + meth.getSimpleName()
-                + "()");
-        List<CtStatement> statements = meth.getElements(new AbstractFilter<>() {
-            @Override
-            public boolean matches(CtStatement stmt) {
-                return super.matches(stmt) && inserter.canMutate(stmt);
-            }
-        });
-        AxChecker.check(statements.size() > 0, "No mutable statements found");
+        for (CtMethod<?> meth : methods) {
+            float prob = rand.nextFloat();
+            if (prob < 0.25f) {
+                AxLog.v("Don't mutating method: " + clazz.getQualifiedName() + "::"
+                        + meth.getSimpleName() + "()");
+            } else if (0.25f <= prob && prob <= 0.26f) {
+                LoopInserter inserter = new LoopInserter(mAx);
 
-        CtStatement stmt = statements.get(AxRandom.getInstance().nextInt(statements.size()));
-        AxLog.v("Mutating statement: ", (out, ignoreUnused) -> out.println(stmt));
-        inserter.mutate(stmt);
+                AxLog.v("Mutating (LoopInserter) method: " + clazz.getQualifiedName() + "::"
+                        + meth.getSimpleName() + "()");
+                List<CtStatement> statements = meth.getElements(new AbstractFilter<>() {
+                    @Override
+                    public boolean matches(CtStatement stmt) {
+                        return super.matches(stmt) && inserter.canMutate(stmt);
+                    }
+                });
+                AxChecker.check(statements.size() > 0, "No mutable statements found");
+
+                CtStatement stmt =
+                        statements.get(AxRandom.getInstance().nextInt(statements.size()));
+                AxLog.v("Inserting to statement: ", (out, ignoreUnused) -> out.println(stmt));
+                inserter.mutate(stmt);
+            } else {
+                StmtWrapper wrapper = new StmtWrapper(mAx);
+
+                AxLog.v("Mutating (StmtWrapper) method: " + clazz.getQualifiedName() + "::"
+                        + meth.getSimpleName() + "()");
+                List<CtStatement> statements = meth.getElements(new AbstractFilter<>() {
+                    @Override
+                    public boolean matches(CtStatement stmt) {
+                        return super.matches(stmt) && wrapper.canMutate(stmt);
+                    }
+                });
+
+                CtStatement stmt =
+                        statements.get(AxRandom.getInstance().nextInt(statements.size()));
+                AxLog.v("Wrapping statement: ", (out, ignoreUnused) -> out.println(stmt));
+                wrapper.mutate(stmt);
+            }
+        }
     }
 }

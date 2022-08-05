@@ -22,6 +22,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         CtNewArray<?> newArray = mFact.createNewArray();
         int dimenCount = type.getDimensionCount();
         if (dimenCount == 1) {
+            // Don't be too large, otherwise it may occupy too much memory.
             int size = AxRandom.getInstance().nextInt(1, 10);
             for (int i = 0; i < size; i++) {
                 newArray.addElement(svitch(type.getComponentType()));
@@ -51,7 +52,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseChar(CtTypeReferenceImpl<?> type) {
-        return mFact.createLiteral((char) AxRandom.getInstance().nextInt(0, 256));
+        return mFact.createLiteral((char) AxRandom.getInstance().nextInt(0, 0xFFFF));
     }
 
     @Override
@@ -90,11 +91,11 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
         // No class found. Either not in classpath, or the qualified name is a bit quirky.
         if (clazz == null) {
-            return null;
+            return mFact.createLiteral(null);
         }
         // Let's choose only the default constructor, otherwise we have to do some recursive
         // synthesis. It's a bit time-consuming so let's disable that temporarily.
-        // TODO Support recursive object synthesis.
+        // TODO Support recursive new object synthesis.
         Constructor<?> defCtor;
         try {
             defCtor = clazz.getConstructor();
@@ -102,7 +103,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
             defCtor = null;
         }
         if (defCtor == null) {
-            return null;
+            return mFact.createLiteral(null);
         }
         // There's a default constructor, then it's safe for us to new an instance
         return mFact.createConstructorCall(type);

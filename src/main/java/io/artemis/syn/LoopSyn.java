@@ -6,19 +6,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import io.artemis.Artemis;
 import io.artemis.AxLog;
 import io.artemis.AxNames;
 import io.artemis.AxRandom;
 import io.artemis.skl.ExHandleSkl;
-import io.artemis.skl.ForLoopSkl;
 import io.artemis.skl.RedirectSkl;
 import io.artemis.util.Spoons;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
@@ -26,6 +27,7 @@ import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.filter.TypeFilter;
 
 /**
  * A synthesizer which aims to synthesize a (neutral) loop at a given program point. Currently, the
@@ -55,12 +57,12 @@ public class LoopSyn {
      * @param pp Program point
      * @return The synthetic loop
      */
-    public CtStatement synLoop(PPoint pp) {
+    public CtStatement synLoop(PPoint pp, LoopSkl skl) {
         Factory fact = mAx.getSpoon().getFactory();
 
         // Synthesize our raw loop using cb and save reused variables
         Set<CtVariable<?>> reusedSet = new HashSet<>();
-        CtBlock<?> rawLoop = synLoopOnly(pp, reusedSet);
+        CtBlock<?> rawLoop = synMainLoop(pp, skl, reusedSet);
 
         // Create backups for our reused variables
         List<CtLocalVariable<?>> backupList = new ArrayList<>(reusedSet.size());
@@ -100,24 +102,36 @@ public class LoopSyn {
                 /* newName= */ AxNames.getInstance().nextName(), finLoop);
     }
 
-    private CtBlock<?> synLoopOnly(PPoint pp, Set<CtVariable<?>> reusedSet) {
+    private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, Set<CtVariable<?>> reusedSet) {
         CtBlock<?> loop = mAx.getSpoon().getFactory().createBlock();
 
-        // Choose a random code brick to instantiate
-        CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
-        AxLog.v("Using code brick: ", (out, ignoreUnused) -> {
-            out.println(cb);
-        });
+        // Every loop skeleton has many names and blocks that we need to fill.
+        // For each name, we give it a random one.
+        // For each block, we fill it by instantiate a code brick.
+        String[] names = new String[skl.getNamesCount()];
+        for (int i = 0; i < names.length; i++) {
+            names[i] = AxNames.getInstance().nextName();
+        }
 
-        // Create declarations for reset inputs that are not to be replaced
-        synDecls(pp, cb.unsafeGetInputs(), reusedSet).forEach(loop::addStatement);
+        CtBlock<?>[] blocks = new CtBlock[skl.getBlockCount()];
+        for (int i = 0; i < blocks.length; i++) {
+            // Choose a random code brick to instantiate
+            CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
+            AxLog.v("Using code brick: ", (out, ignoreUnused) -> {
+                out.println(cb);
+            });
 
-        // Append the loop with the code brick as body
-        loop.addStatement(ForLoopSkl.instantiate(mAx,
-                /* iVarName= */ AxNames.getInstance().nextName(),
-                /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()), /* step= */ mRand.nextInt(1, 2),
+            // Create declarations for reset inputs that are not to be replaced, of currently cb
+            synDecls(pp, cb.unsafeGetInputs(), reusedSet).forEach(loop::addStatement);
+
+            // Append the loop with the code brick as body
+            blocks[i] = cb.unsafeGetStatements().clone();
+        }
+
+        loop.addStatement(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),
+                /* step= */ mRand.nextInt(1, 2),
                 /* trip= */ mRand.nextInt(mAx.getMinLoopTrips(), mAx.getMaxLoopTrips()),
-                /* body= */ cb.unsafeGetStatements().clone()));
+                /* names= */ names, /* blocks= */ blocks));
 
         return loop;
     }
@@ -138,11 +152,20 @@ public class LoopSyn {
             // risky to be implicitly modified by our code brick. Just be careful.
             // We always prefer to reuse existing variables than synthesize a new declaration.
             if (Spoons.isPrimitiveType(inpType)) {
+                // We never use variables that are accessed by current program point's statements
+                // because it is likely that we change the semantics. For example, when wrapping a
+                // statement a = b + c, if our brick assigns b a new value, then a's is changed.
+                Set<CtVariable<?>> stmtUsingVarSet = pp.getStatement()
+                        .getElements(new TypeFilter<>(CtVariableAccess.class)).stream()
+                        .map(vacc -> (CtVariable<?>) vacc.getVariable().getDeclaration())
+                        .collect(Collectors.toSet());
+                // TODO Cache and don't reuse again if already reused
                 List<CtVariable<?>> reusableSet = new ArrayList<>();
                 pp.forEachAccVariable(inpType, var -> {
                     // Ensure the same final; cannot use non-static in static environments
                     if (var.isFinal() == inp.isFinal()
-                            && (!(var instanceof CtField) || var.isStatic() || !meth.isStatic())) {
+                            && (!(var instanceof CtField) || var.isStatic() || !meth.isStatic())
+                            && !stmtUsingVarSet.contains(var)) {
                         reusableSet.add(var);
                     }
                 });
@@ -150,9 +173,9 @@ public class LoopSyn {
                     // Randomly select a variable, and rename all input occurrences
                     CtVariable<?> reusedVar =
                             reusableSet.get(AxRandom.getInstance().nextInt(reusableSet.size()));
+                    AxLog.v("Reuse existing variable " + reusedVar + " to fill input " + inp);
                     Spoons.renameVariable(inp, reusedVar.getSimpleName());
                     reusedSet.add(reusedVar);
-                    AxLog.v("Reuse existing variable " + reusedVar + " to fill input " + inp);
                     continue;
                 }
             }
