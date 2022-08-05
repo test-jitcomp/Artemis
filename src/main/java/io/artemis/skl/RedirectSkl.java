@@ -3,8 +3,6 @@ package io.artemis.skl;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
 
 import io.artemis.Artemis;
 import spoon.reflect.code.CtBlock;

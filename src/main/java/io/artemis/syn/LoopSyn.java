@@ -131,6 +131,7 @@ public class LoopSyn {
         for (CtVariable<?> inp : inputs) {
             CtTypeReference<?> inpType = inp.getType().clone();
             String inpName = inp.getSimpleName();
+            CtExpression<?> inpInit = null;
 
             // Let's find a reusable variables and replace all occurrences with that variable.
             // We only consider reuse primitive types since reusing references (incl. array) is
@@ -151,16 +152,30 @@ public class LoopSyn {
                             reusableSet.get(AxRandom.getInstance().nextInt(reusableSet.size()));
                     Spoons.renameVariable(inp, reusedVar.getSimpleName());
                     reusedSet.add(reusedVar);
+                    AxLog.v("Reuse existing variable " + reusedVar + " to fill input " + inp);
                     continue;
                 }
             }
 
-            // If there's no reusable variables, let's try to find an initializer
-            // TODO Call CbManager to reuse initializers (split initializers to many smaller ones)
+            // If there's no reusable variables, let's try to find an existing initializer.
+            // We don't always use initializers, let's flip a coin to introduce some randomness.
+            if (AxRandom.getInstance().nextFloat() > 0.5f) {
+                List<CtExpression<?>> reusableInitzSet = new ArrayList<>();
+                mCbManager.forEachInitz(inpType, reusableInitzSet::add);
+                if (reusableInitzSet.size() > 0) {
+                    inpInit = reusableInitzSet
+                            .get(AxRandom.getInstance().nextInt(reusableInitzSet.size())).clone();
+                    AxLog.v("Reuse existing initializer " + inpInit + " to fill input " + inp);
+                }
+            }
 
-            // There's no initializers, either. Compromise. Let's do decl synthesis.
-            CtExpression<?> inpInit = synExpr(inpType);
+            // There's no initializers, either. Let's compromise to decl synthesis.
+            if (inpInit == null) {
+                inpInit = synExpr(inpType);
+                AxLog.v("Synthesized an initializer " + inpInit + " to fill input " + inp);
+            }
 
+            // It's okay if inpInit is still null.
             decls.add(fact.createLocalVariable(inpType, inpName, (CtExpression) inpInit));
         }
 

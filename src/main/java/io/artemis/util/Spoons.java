@@ -1,12 +1,12 @@
 package io.artemis.util;
 
+import io.artemis.Artemis;
+import io.artemis.AxChecker;
 import io.artemis.AxLog;
+import spoon.FluentLauncher;
 import spoon.refactoring.CtRenameGenericVariableRefactoring;
 import spoon.refactoring.RefactoringException;
-import spoon.reflect.code.CtLiteral;
-import spoon.reflect.code.CtNewArray;
-import spoon.reflect.declaration.CtCompilationUnit;
-import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
@@ -74,6 +74,14 @@ public class Spoons {
                 }
             }
         }
+    }
+
+    public static CtClass<?> ensureClassLoaded(String path, String className) {
+        CtClass<?> clazz =
+                new FluentLauncher().inputResource(path).complianceLevel(Artemis.JAVA_VERSION)
+                        .buildModel().getRootPackage().getType(className);
+        AxChecker.check(clazz != null, "Class " + className + " is not found in file: " + path);
+        return clazz;
     }
 
     public static void renameVariable(CtVariable<?> var, String newName) {

@@ -1,13 +1,10 @@
 package io.artemis.syn;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import spoon.reflect.code.CtBlock;
-import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
-import spoon.support.util.ModelList;
 
 /**
  * A code brick is a special type of code skeleton which have inputs and a list of statements. To
@@ -18,8 +15,6 @@ import spoon.support.util.ModelList;
 /* package */ class CodeBrick {
     // The method that hangs the code brick
     private final CtMethod<?> mMethod;
-    // Imports that this code brick should import
-    private final List<CtImport> mImports;
 
     /**
      * Get the inputs of this code brick. Just take care. The inputs returned are already linked. So
@@ -51,8 +46,7 @@ import spoon.support.util.ModelList;
         return mMethod.toString();
     }
 
-    /* package */ CodeBrick(CtMethod<?> cbMethod, List<CtImport> cbImports) {
+    /* package */ CodeBrick(CtMethod<?> cbMethod) {
         mMethod = cbMethod;
-        mImports = cbImports;
     }
 }

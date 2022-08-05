@@ -1,5 +1,7 @@
 package io.artemis.syn;
 
+import java.lang.reflect.Constructor;
+
 import io.artemis.AxRandom;
 import io.artemis.util.Spoons;
 import spoon.reflect.code.CtExpression;
@@ -79,7 +81,31 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseRef(CtTypeReferenceImpl<?> type) {
-        return null;
+        // Let's load the class and check its constructors
+        Class<?> clazz;
+        try {
+            clazz = Class.forName(type.getQualifiedName());
+        } catch (ClassNotFoundException e) {
+            clazz = null;
+        }
+        // No class found. Either not in classpath, or the qualified name is a bit quirky.
+        if (clazz == null) {
+            return null;
+        }
+        // Let's choose only the default constructor, otherwise we have to do some recursive
+        // synthesis. It's a bit time-consuming so let's disable that temporarily.
+        // TODO Support recursive object synthesis.
+        Constructor<?> defCtor;
+        try {
+            defCtor = clazz.getConstructor();
+        } catch (NoSuchMethodException e) {
+            defCtor = null;
+        }
+        if (defCtor == null) {
+            return null;
+        }
+        // There's a default constructor, then it's safe for us to new an instance
+        return mFact.createConstructorCall(type);
     }
 
     // Never use the svitch() method

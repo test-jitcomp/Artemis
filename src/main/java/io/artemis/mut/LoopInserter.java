@@ -1,16 +1,10 @@
 package io.artemis.mut;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import io.artemis.Artemis;
-import io.artemis.AxChecker;
 import io.artemis.AxLog;
 import io.artemis.syn.PPoint;
-import io.artemis.util.Spoons;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtStatement;
-import spoon.reflect.declaration.CtCompilationUnit;
 
 public class LoopInserter extends StmtMutator {
 

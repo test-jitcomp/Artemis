@@ -36,8 +36,19 @@ public class Artemis {
             + "  -Xkey:value    extra options, available options are:\n"
             + "  -v             verbose mode (default: false)\n"
             + "  -V             more verbose (vverbose) mode, implies -v (default: false)\n"
-            + "  -h             show this message";
+            + "  -h             show this message\n"
+            + "\n" 
+            + "Notice:\n"
+            + "  (1) Currently, Artemis only supports to mutation Java 8 programs, but the\n"
+            + "  mutants can be used to test any Java virtual machines supporting at least\n"
+            + "  Java 8. Please don't feed any Java 9+ inputs to Artemis, otherwise, \n"
+            + "  Artemis cannot assure its behavior to be expected.\n"
+            + "  (2) Currently, Artemis only supports to mutate a the given input .java file.\n"
+            + "  It won't mutate any likely dependencies (i.e., files under classpath). ";
     // @formatter:on
+
+    // Supported Java version: currently we only support Java 8.
+    public static final int JAVA_VERSION = 8;
 
     private static final int MIN_LOOP_TRIPS = 500_000;
     private static final int MAX_LOOP_TRIPS = 100_000_000;
@@ -120,7 +131,7 @@ public class Artemis {
         AxLog.v("Building Spoon model");
 
         mSpoon = new Launcher();
-        mSpoon.getEnvironment().setComplianceLevel(8);
+        mSpoon.getEnvironment().setComplianceLevel(JAVA_VERSION);
         // Use simple name instead of full-qualified name
         mSpoon.getEnvironment().setAutoImports(true);
         mSpoon.getEnvironment().setCommentEnabled(false);
