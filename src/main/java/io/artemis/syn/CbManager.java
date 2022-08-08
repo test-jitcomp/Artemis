@@ -29,7 +29,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
  * (1) Each code brick should be named as CB_INITZ_CLASS_NAME_PREFIX_{i}.java and there's a method 
  *     namely CB_METHOD_NAME saving all the brick. Parameters of that method are inputs (holes).
  * (2) All initializers are managed according to their types. Each initializer should be set as a
- *     field of its specific INITZ_CLASS_NAME_{type} class.
+ *     field of its specific INITZ_CLASS_NAME_{type} class. For initializers of primitive types,
+ *     should guarantee that the initializer can be safely assigned to the boxed type.
  * // @formatter:on
  */
 /* package */ class CbManager {
@@ -167,11 +168,21 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
 
         @Override
+        protected CtClass<?> kaseBoxedBoolean(CtTypeReferenceImpl<?> type) {
+            return kaseBoolean(type);
+        }
+
+        @Override
         protected CtClass<?> kaseByte(CtTypeReferenceImpl<?> type) {
             if (mInitzClsByte == null) {
                 mInitzClsByte = doLoad(INITZ_CLASS_NAME_BYTE);
             }
             return mInitzClsByte;
+        }
+
+        @Override
+        protected CtClass<?> kaseBoxedByte(CtTypeReferenceImpl<?> type) {
+            return kaseByte(type);
         }
 
         @Override
@@ -183,11 +194,21 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
 
         @Override
+        protected CtClass<?> kaseBoxedShort(CtTypeReferenceImpl<?> type) {
+            return kaseShort(type);
+        }
+
+        @Override
         protected CtClass<?> kaseChar(CtTypeReferenceImpl<?> type) {
             if (mInitzClsChar == null) {
                 mInitzClsChar = doLoad(INITZ_CLASS_NAME_CHAR);
             }
             return mInitzClsChar;
+        }
+
+        @Override
+        protected CtClass<?> kaseBoxedChar(CtTypeReferenceImpl<?> type) {
+            return kaseChar(type);
         }
 
         @Override
@@ -199,11 +220,21 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
 
         @Override
+        protected CtClass<?> kaseBoxedInt(CtTypeReferenceImpl<?> type) {
+            return kaseInt(type);
+        }
+
+        @Override
         protected CtClass<?> kaseLong(CtTypeReferenceImpl<?> type) {
             if (mInitzClsLong == null) {
                 mInitzClsLong = doLoad(INITZ_CLASS_NAME_LONG);
             }
             return mInitzClsLong;
+        }
+
+        @Override
+        protected CtClass<?> kaseBoxedLong(CtTypeReferenceImpl<?> type) {
+            return kaseLong(type);
         }
 
         @Override
@@ -215,11 +246,21 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
 
         @Override
+        protected CtClass<?> kaseBoxedFloat(CtTypeReferenceImpl<?> type) {
+            return kaseFloat(type);
+        }
+
+        @Override
         protected CtClass<?> kaseDouble(CtTypeReferenceImpl<?> type) {
             if (mInitzClsDouble == null) {
                 mInitzClsDouble = doLoad(INITZ_CLASS_NAME_DOUBLE);
             }
             return mInitzClsDouble;
+        }
+
+        @Override
+        protected CtClass<?> kaseBoxedDouble(CtTypeReferenceImpl<?> type) {
+            return kaseDouble(type);
         }
 
         @Override

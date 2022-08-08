@@ -30,11 +30,14 @@ public class ArtemisPolicy extends MutationPolicy {
                 "No methods found in the given class: " + clazz.getQualifiedName());
 
         for (CtMethod<?> meth : methods) {
-            float prob = rand.nextFloat();
-            if (prob < 0.25f) {
+            if (rand.nextBoolean()) {
                 AxLog.v("Don't mutating method: " + clazz.getQualifiedName() + "::"
                         + meth.getSimpleName() + "()");
-            } else if (0.25f <= prob && prob <= 0.26f) {
+                continue;
+            }
+
+            float prob = rand.nextFloat();
+            if (prob <= 0.5f) {
                 LoopInserter inserter = new LoopInserter(mAx);
 
                 AxLog.v("Mutating (LoopInserter) method: " + clazz.getQualifiedName() + "::"

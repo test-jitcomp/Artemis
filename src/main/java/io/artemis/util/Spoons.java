@@ -18,6 +18,22 @@ public class Spoons {
 
         protected abstract T kaseArray(CtArrayTypeReferenceImpl<?> type);
 
+        protected abstract T kaseBoxedBoolean(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedByte(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedShort(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedChar(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedInt(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedLong(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedFloat(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedDouble(CtTypeReferenceImpl<?> type);
+
         protected abstract T kaseBoolean(CtTypeReferenceImpl<?> type);
 
         protected abstract T kaseByte(CtTypeReferenceImpl<?> type);
@@ -44,29 +60,37 @@ public class Spoons {
             } else {
                 switch (type.getQualifiedName()) {
                     case "boolean":
-                    case "java.lang.Boolean":
                         return kaseBoolean((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Boolean":
+                        return kaseBoxedBoolean((CtTypeReferenceImpl<?>) type);
                     case "byte":
-                    case "java.lang.Byte":
                         return kaseByte((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Byte":
+                        return kaseBoxedByte((CtTypeReferenceImpl<?>) type);
                     case "short":
-                    case "java.lang.Short":
                         return kaseShort((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Short":
+                        return kaseBoxedShort((CtTypeReferenceImpl<?>) type);
                     case "char":
-                    case "java.lang.Character":
                         return kaseChar((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Character":
+                        return kaseBoxedChar((CtTypeReferenceImpl<?>) type);
                     case "int":
-                    case "java.lang.Integer":
                         return kaseInt((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Integer":
+                        return kaseBoxedInt((CtTypeReferenceImpl<?>) type);
                     case "long":
-                    case "java.lang.Long":
                         return kaseLong((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Long":
+                        return kaseBoxedLong((CtTypeReferenceImpl<?>) type);
                     case "float":
-                    case "java.lang.Float":
                         return kaseFloat((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Float":
+                        return kaseBoxedFloat((CtTypeReferenceImpl<?>) type);
                     case "double":
-                    case "java.lang.Double":
                         return kaseDouble((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Double":
+                        return kaseBoxedDouble((CtTypeReferenceImpl<?>) type);
                     case "java.lang.String":
                         return kaseString((CtTypeReferenceImpl<?>) type);
                     default:
@@ -95,7 +119,7 @@ public class Spoons {
         }
     }
 
-    public static boolean isPrimitiveType(CtTypeReference<?> type) {
+    public static boolean isPrimitiveAlikeType(CtTypeReference<?> type) {
         return new TypeSwitch<Boolean>() {
             @Override
             public Boolean kaseArray(CtArrayTypeReferenceImpl<?> type) {
@@ -108,7 +132,17 @@ public class Spoons {
             }
 
             @Override
+            protected Boolean kaseBoxedBoolean(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
             public Boolean kaseByte(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
+            protected Boolean kaseBoxedByte(CtTypeReferenceImpl<?> type) {
                 return true;
             }
 
@@ -118,7 +152,17 @@ public class Spoons {
             }
 
             @Override
+            protected Boolean kaseBoxedShort(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
             public Boolean kaseChar(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
+            protected Boolean kaseBoxedChar(CtTypeReferenceImpl<?> type) {
                 return true;
             }
 
@@ -128,7 +172,17 @@ public class Spoons {
             }
 
             @Override
+            protected Boolean kaseBoxedInt(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
             public Boolean kaseLong(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
+            protected Boolean kaseBoxedLong(CtTypeReferenceImpl<?> type) {
                 return true;
             }
 
@@ -138,7 +192,17 @@ public class Spoons {
             }
 
             @Override
+            protected Boolean kaseBoxedFloat(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
             public Boolean kaseDouble(CtTypeReferenceImpl<?> type) {
+                return true;
+            }
+
+            @Override
+            protected Boolean kaseBoxedDouble(CtTypeReferenceImpl<?> type) {
                 return true;
             }
 

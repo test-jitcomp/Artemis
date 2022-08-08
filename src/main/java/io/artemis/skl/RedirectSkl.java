@@ -6,7 +6,6 @@ import java.io.PrintStream;
 
 import io.artemis.Artemis;
 import spoon.reflect.code.CtBlock;
-import spoon.reflect.code.CtStatement;
 import spoon.template.BlockTemplate;
 import spoon.template.Local;
 import spoon.template.Parameter;
@@ -26,7 +25,7 @@ public class RedirectSkl extends BlockTemplate {
     private String _NEW_NAME_;
 
     @Local
-    public static CtStatement instantiate(Artemis ax, String outBkName, String errBkName,
+    public static CtBlock<?> instantiate(Artemis ax, String outBkName, String errBkName,
             String newName, CtBlock<?> block) {
         RedirectSkl skl = new RedirectSkl();
 

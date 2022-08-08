@@ -60,9 +60,9 @@ public class LoopSyn {
     public CtStatement synLoop(PPoint pp, LoopSkl skl) {
         Factory fact = mAx.getSpoon().getFactory();
 
-        // Synthesize our raw loop using cb and save reused variables
+        // Synthesize our main loop using cb and save reused variables
         Set<CtVariable<?>> reusedSet = new HashSet<>();
-        CtBlock<?> rawLoop = synMainLoop(pp, skl, reusedSet);
+        CtBlock<?> mainLoop = synMainLoop(pp, skl, reusedSet);
 
         // Create backups for our reused variables
         List<CtLocalVariable<?>> backupList = new ArrayList<>(reusedSet.size());
@@ -76,43 +76,34 @@ public class LoopSyn {
         }
 
         // Create restores for our reused variables
-        CtBlock<?> restoreList = fact.createBlock();
+        List<CtStatement> restoreList = new ArrayList<>(reusedSet.size());
         for (int i = 0; i < reusedList.size(); i++) {
             CtVariable<?> var = reusedList.get(i);
             CtLocalVariable<?> backup = backupList.get(i);
-            restoreList.addStatement(fact.createVariableAssignment(var.getReference(),
-                    var.isStatic(), (CtExpression) fact.createVariableRead(backup.getReference(),
+            restoreList.add(fact.createVariableAssignment(var.getReference(), var.isStatic(),
+                    (CtExpression) fact.createVariableRead(backup.getReference(),
                             backup.isStatic())));
         }
 
+        // Out final loop should be ``backups; main loop; restores;``
         CtBlock<?> finLoop = fact.createBlock();
-
-        // Backup every reused variable
         backupList.forEach(finLoop::addStatement);
+        finLoop.addStatement(mainLoop);
+        restoreList.forEach(finLoop::addStatement);
 
-        // Catch every possible exceptions to avoid unexpected behavior,
-        // and restore values of every reused variables
-        finLoop.addStatement(
-                ExHandleSkl.instantiate(mAx, /* exName= */ AxNames.getInstance().nextName(),
-                        /* tryBlock= */ rawLoop, /* finallyBlock= */ restoreList));
-
-        // Redirect stdout and stderr to avoid unexpected outputs
-        return RedirectSkl.instantiate(mAx, /* outBkName= */ AxNames.getInstance().nextName(),
-                /* errBkName= */ AxNames.getInstance().nextName(),
-                /* newName= */ AxNames.getInstance().nextName(), finLoop);
+        return finLoop;
     }
 
     private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, Set<CtVariable<?>> reusedSet) {
         CtBlock<?> loop = mAx.getSpoon().getFactory().createBlock();
 
-        // Every loop skeleton has many names and blocks that we need to fill.
-        // For each name, we give it a random one.
-        // For each block, we fill it by instantiate a code brick.
+        // For each name of the skeleton, we give it a random one.
         String[] names = new String[skl.getNamesCount()];
         for (int i = 0; i < names.length; i++) {
             names[i] = AxNames.getInstance().nextName();
         }
 
+        // For each block of the skeleton, we fill it by instantiating a code brick.
         CtBlock<?>[] blocks = new CtBlock[skl.getBlockCount()];
         for (int i = 0; i < blocks.length; i++) {
             // Choose a random code brick to instantiate
@@ -124,8 +115,21 @@ public class LoopSyn {
             // Create declarations for reset inputs that are not to be replaced, of currently cb
             synDecls(pp, cb.unsafeGetInputs(), reusedSet).forEach(loop::addStatement);
 
+            // The very raw block is the code brick
+            CtBlock<?> blk = cb.unsafeGetStatements().clone();
+
+            // Wrap it with a try-catch to avoid unexpected exceptions from the brick
+            blk = ExHandleSkl.instantiate(mAx, /* exName= */ AxNames.getInstance().nextName(),
+                    /* tryBlock= */ blk);
+
+            // Redirect stdout and stderr to avoid unexpected outputs and recover afterwards
+            // TODO Optimize output redirection, maybe put a reference as the class field
+            blk = RedirectSkl.instantiate(mAx, /* outBkName= */ AxNames.getInstance().nextName(),
+                    /* errBkName= */ AxNames.getInstance().nextName(),
+                    /* newName= */ AxNames.getInstance().nextName(), blk);
+
             // Append the loop with the code brick as body
-            blocks[i] = cb.unsafeGetStatements().clone();
+            blocks[i] = blk;
         }
 
         loop.addStatement(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),
@@ -151,7 +155,7 @@ public class LoopSyn {
             // We only consider reuse primitive types since reusing references (incl. array) is
             // risky to be implicitly modified by our code brick. Just be careful.
             // We always prefer to reuse existing variables than synthesize a new declaration.
-            if (Spoons.isPrimitiveType(inpType)) {
+            if (Spoons.isPrimitiveAlikeType(inpType)) {
                 // We never use variables that are accessed by current program point's statements
                 // because it is likely that we change the semantics. For example, when wrapping a
                 // statement a = b + c, if our brick assigns b a new value, then a's is changed.

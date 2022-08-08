@@ -3,11 +3,11 @@ package io.artemis.skl;
 import io.artemis.Artemis;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtStatement;
+import spoon.template.BlockTemplate;
 import spoon.template.Local;
 import spoon.template.Parameter;
-import spoon.template.StatementTemplate;
 
-public class ExHandleSkl extends StatementTemplate {
+public class ExHandleSkl extends BlockTemplate {
     // Values to substitute
     @Parameter
     private CtBlock<?> _TRY_BLOCK_;
@@ -19,24 +19,24 @@ public class ExHandleSkl extends StatementTemplate {
     private String _EX_NAME_;
 
     @Local
-    public static CtStatement instantiate(Artemis ax, String exName, CtStatement tryStmt) {
+    public static CtBlock<?> instantiate(Artemis ax, String exName, CtStatement tryStmt) {
         return instantiate(ax, exName, ax.getSpoon().getFactory().createCtBlock(tryStmt), null);
     }
 
     @Local
-    public static CtStatement instantiate(Artemis ax, String exName, CtBlock<?> tryBlock) {
+    public static CtBlock<?> instantiate(Artemis ax, String exName, CtBlock<?> tryBlock) {
         return instantiate(ax, exName, tryBlock, null);
     }
 
     @Local
-    public static CtStatement instantiate(Artemis ax, String exName, CtStatement tryStmt,
+    public static CtBlock<?> instantiate(Artemis ax, String exName, CtStatement tryStmt,
             CtStatement finallyStmt) {
         return instantiate(ax, exName, ax.getSpoon().getFactory().createCtBlock(tryStmt),
                 ax.getSpoon().getFactory().createCtBlock(finallyStmt));
     }
 
     @Local
-    public static CtStatement instantiate(Artemis ax, String exName, CtBlock<?> tryBlock,
+    public static CtBlock<?> instantiate(Artemis ax, String exName, CtBlock<?> tryBlock,
             CtBlock<?> finallyBlock) {
         ExHandleSkl skl = new ExHandleSkl();
 
@@ -48,7 +48,7 @@ public class ExHandleSkl extends StatementTemplate {
     }
 
     @Override
-    public void statement() throws Throwable {
+    public void block() throws Throwable {
         try {
             _TRY_BLOCK_.S();
         } catch (Throwable _EX_NAME_) {
