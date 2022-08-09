@@ -14,9 +14,11 @@ import spoon.refactoring.RefactoringException;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtStatementList;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtCompilationUnit;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
@@ -137,15 +139,30 @@ public class Spoons {
     }
 
     public static CtClass<?> ensureClassLoaded(String path, String className) {
+        for (CtType<?> type : ensureCompUnitLoaded(path).getDeclaredTypes()) {
+            if (type instanceof CtClass && type.getQualifiedName().equals(className)) {
+                return (CtClass<?>) type;
+            }
+        }
+        // noinspection ConstantConditions
+        AxChecker.check(false, "Class " + className + " is not found in file: " + path);
+        throw new CannotReachHereException("After assertion");
+    }
+
+    public static CtCompilationUnit ensureCompUnitLoaded(String path) {
         SpoonAPI spoon = new Launcher();
         spoon.getEnvironment().setComplianceLevel(Artemis.JAVA_VERSION);
         spoon.getEnvironment().setNoClasspath(true);
+        spoon.getEnvironment().setAutoImports(true);
         spoon.getEnvironment().setOutputType(OutputType.NO_OUTPUT);
         spoon.getEnvironment().setCopyResources(false);
         spoon.addInputResource(path);
-        CtClass<?> clazz = spoon.buildModel().getRootPackage().getType(className);
-        AxChecker.check(clazz != null, "Class " + className + " is not found in file: " + path);
-        return clazz;
+        spoon.buildModel();
+
+        CtCompilationUnit unit = spoon.getFactory().CompilationUnit().getOrCreate(path);
+        AxChecker.check(unit != null, "Compilation unit is not found in file: " + path);
+
+        return unit;
     }
 
     public static void renameVariable(CtVariable<?> var, String newName) {

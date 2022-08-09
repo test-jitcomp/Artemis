@@ -1,5 +1,8 @@
 package io.artemis.mut;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.artemis.Artemis;
 import io.artemis.AxLog;
 import io.artemis.skl.SwLoopSkl;
@@ -12,6 +15,7 @@ import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtStatementList;
 import spoon.reflect.code.CtYieldStatement;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtInterface;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.visitor.filter.TypeFilter;
@@ -50,12 +54,16 @@ public class StmtWrapper extends StmtMutator {
         PPoint pp = PPoint.beforeStmt(mAx.getTestClass(), stmt);
 
         AxLog.v("Synthesizing new loops with StmtWrapper's skeleton");
-        CtStatement loop = mAx.getCodeSyn().synLoop(pp, new SwLoopSkl());
+        List<CtImport> imports = new ArrayList<>(5);
+        CtStatement loop = mAx.getCodeSyn().synLoop(pp, new SwLoopSkl(), imports);
 
         AxLog.v("Wrapping the statement by the following loop", (out, err) -> out.println(loop));
         // Replace the statement to wrap stmt by our synthetic loop
         stmt.replace(loop);
         // Substitute the placeholder by our statement to wrap stmt
         SwLoopSkl.wrapStmt(loop, stmt);
+
+        // Add required imports to our tests
+        mAx.getTestCompUnit().getImports().addAll(imports);
     }
 }

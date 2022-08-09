@@ -1,5 +1,6 @@
 package io.artemis.mut;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
@@ -55,8 +57,10 @@ public class MethInvocator extends MethMutator {
             return;
         }
 
-        // Create a control field in the class to control the field
         Factory fact = mAx.getSpoon().getFactory();
+        CodeSyn syn = mAx.getCodeSyn();
+
+        // Create a control field in the class to control the field
         CtField<Boolean> ctrl = fact.createCtField(/* name= */AxNames.getInstance().nextName(),
                 fact.createCtTypeReference(Boolean.class), "false");
         if (clazz.isStatic() || clazz.isTopLevel()) {
@@ -65,8 +69,9 @@ public class MethInvocator extends MethMutator {
         AxLog.v("Adding control field: " + ctrl.getSimpleName());
         clazz.addField(ctrl);
 
+        List<CtImport> imports = new ArrayList<>(5);
+
         // Create the control sequence and insert to meth as a prologue
-        CodeSyn syn = mAx.getCodeSyn();
         AxLog.v("Synthesizing control prologue controlled by field " + Spoons.getSimpleName(ctrl));
         CtReturn<?> retStmt = fact.createReturn();
         if (!Spoons.isVoidType(meth.getType())) {
@@ -74,7 +79,8 @@ public class MethInvocator extends MethMutator {
         }
         CtStatement ctrlSeq = MiCtrlSeqSkl.instantiate(mAx, ctrl,
                 syn.synCodeSeg(
-                        PPoint.beforeStmt(mAx.getTestClass(), meth.getBody().getStatement(0))),
+                        PPoint.beforeStmt(mAx.getTestClass(), meth.getBody().getStatement(0)),
+                        imports),
                 retStmt);
         AxLog.v("Add the following control prologue to method " + Spoons.getSimpleName(meth),
                 (out, ignoreUnused) -> out.println(ctrlSeq));
@@ -85,7 +91,7 @@ public class MethInvocator extends MethMutator {
         PPoint pp = PPoint.beforeStmt(mAx.getTestClass(), invoc);
 
         AxLog.v("Synthesizing new loops with MethInvocator's skeleton");
-        CtStatement loop = mAx.getCodeSyn().synLoop(pp, new MiLoopSkl());
+        CtStatement loop = mAx.getCodeSyn().synLoop(pp, new MiLoopSkl(), imports);
 
         // Substitute placeholders in the skeleton
         AxLog.v("Boosting the given by the following loop",
@@ -95,8 +101,10 @@ public class MethInvocator extends MethMutator {
         List<CtExpression<?>> args =
                 invoc.getArguments().stream().map(CtExpression::clone).collect(Collectors.toList());
         MiLoopSkl.invocMeth(loop, invoc, args, fact);
-
         // Insert the loop right before the invocation
         invoc.insertBefore(loop);
+
+        // Add required imports to our tests
+        mAx.getTestCompUnit().getImports().addAll(imports);
     }
 }

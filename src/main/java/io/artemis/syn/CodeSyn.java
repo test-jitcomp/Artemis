@@ -21,6 +21,7 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
 import spoon.reflect.declaration.CtVariable;
@@ -54,17 +55,19 @@ public class CodeSyn {
     }
 
     /**
-     * Synthesize a loop at the given program point.
+     * Synthesize a loop at the given program point using the given skeleton.
      * 
      * @param pp Program point
+     * @param skl Loop skeleton used to do synthesis
+     * @param imp Types that are required to be imported when using the synthetic loop
      * @return The synthetic loop
      */
-    public CtStatement synLoop(PPoint pp, LoopSkl skl) {
+    public CtStatement synLoop(PPoint pp, LoopSkl skl, List<CtImport> imp) {
         Factory fact = mAx.getSpoon().getFactory();
 
         // Synthesize our main loop using cb and save reused variables
         Set<CtVariable<?>> reusedSet = new HashSet<>();
-        CtBlock<?> mainLoop = synMainLoop(pp, skl, reusedSet);
+        CtBlock<?> mainLoop = synMainLoop(pp, skl, imp, reusedSet);
 
         // Transfer reused set to a list to enable a 1-1 mapping
         List<CtVariable<?>> reusedList = new ArrayList<>(reusedSet);
@@ -82,7 +85,14 @@ public class CodeSyn {
         return finLoop;
     }
 
-    public CtBlock<?> synCodeSeg(PPoint pp) {
+    /**
+     * Synthesize a piece of code segment at given program point
+     * 
+     * @param pp Program point
+     * @param imp Types that are required to be imported when using the synthetic code
+     * @return The synthetic code segment
+     */
+    public CtBlock<?> synCodeSeg(PPoint pp, List<CtImport> imp) {
         CtBlock<?> seg = mAx.getSpoon().getFactory().createBlock();
 
         // Choose a random code brick to instantiate
@@ -105,14 +115,24 @@ public class CodeSyn {
         List<CtStatement> restoreList = synRestores(reusedList, backupList);
         restoreList.forEach(seg::addStatement);
 
+        // Append imports to imp
+        cb.unsafeGetImports().forEach(e -> imp.add(e.clone()));
+
         return seg;
     }
 
+    /**
+     * Synthesize an expression of the given type
+     * 
+     * @param type Type of the expression
+     * @return The synthetic expression
+     */
     public CtExpression<?> synExpr(CtTypeReference<?> type) {
         return mNewIns.newInstance(mAx.getSpoon().getFactory(), type);
     }
 
-    private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, Set<CtVariable<?>> reusedSet) {
+    private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, List<CtImport> typesToImport,
+            Set<CtVariable<?>> reusedSet) {
         CtBlock<?> loop = mAx.getSpoon().getFactory().createBlock();
 
         // For each name of the skeleton, we give it a random one.
@@ -136,6 +156,9 @@ public class CodeSyn {
             // Append the loop with the code brick as body
             blocks[i] = mAx.getSpoon().getFactory().createBlock();
             synForCbStmts(cb).forEach(blocks[i]::addStatement);
+
+            // Append required imports
+            cb.unsafeGetImports().forEach(e -> typesToImport.add(e.clone()));
         }
 
         Spoons.flat(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),

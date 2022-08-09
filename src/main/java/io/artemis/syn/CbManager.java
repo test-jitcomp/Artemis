@@ -10,11 +10,14 @@ import io.artemis.AxChecker;
 import io.artemis.AxNames;
 import io.artemis.util.CannotReachHereException;
 import io.artemis.util.Spoons;
+import spoon.reflect.code.CtCatchVariable;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtCompilationUnit;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
+import spoon.reflect.declaration.CtType;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
@@ -122,9 +125,14 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
                 new File(mCbFolder.getAbsolutePath() + File.separator + cbClassName + ".java");
         AxChecker.check(cbFile.exists(), "Code brick class not found: " + cbFile.getAbsolutePath());
 
-        // We assume that the code brick class have the same name as the file
-        CtClass<?> cbClass = Spoons.ensureClassLoaded(cbFile.getAbsolutePath(), cbClassName);
-        AxChecker.check(cbClass.getMethods().size() == 1, "The code brick has >=1 code bricks");
+        CtCompilationUnit cbUnit = Spoons.ensureCompUnitLoaded(cbFile.getAbsolutePath());
+
+        // We assume that the code brick class have the same name as the file (no packages)
+        CtType<?> mainType = cbUnit.getMainType();
+        AxChecker.check(
+                mainType instanceof CtClass && cbClassName.equals(mainType.getQualifiedName()),
+                "The code brick has >=1 code bricks");
+        CtClass<?> cbClass = (CtClass<?>) mainType;
 
         CtMethod<?> cbMethod = null;
         try {
@@ -137,8 +145,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         AxChecker.check(cbMethod.getBody() != null,
                 "No statements found in code brick " + cbClassName + "#" + CB_METHOD_NAME + "()");
 
-        // Rename every parameter (i.e., input of the brick) and local variable
-        // such that we don't conflict when instantiating the brick.
+        // Rename every parameter (i.e., input of the brick) and local variable and catch variable
+        // such that we don't conflict when instantiating the brick and inserting elsewhere.
         for (CtParameter<?> param : cbMethod.getParameters()) {
             Spoons.renameVariable(param, AxNames.getInstance().nextName());
         }
@@ -146,8 +154,12 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
                 .getElements(new TypeFilter<>(CtLocalVariable.class))) {
             Spoons.renameVariable(local, AxNames.getInstance().nextName());
         }
+        for (CtCatchVariable<?> ex : cbMethod
+                .getElements(new TypeFilter<>(CtCatchVariable.class))) {
+            Spoons.renameVariable(ex, AxNames.getInstance().nextName());
+        }
 
-        return new CodeBrick(cbMethod);
+        return new CodeBrick(cbMethod, cbUnit.getImports());
     }
 
     private class InitzLazyLoader extends Spoons.TypeSwitch<CtClass<?>> {

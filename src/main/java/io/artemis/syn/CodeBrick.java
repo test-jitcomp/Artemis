@@ -3,8 +3,10 @@ package io.artemis.syn;
 import java.util.List;
 
 import spoon.reflect.code.CtBlock;
+import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtParameter;
+import spoon.support.util.ModelList;
 
 /**
  * A code brick is a special type of code skeleton which have inputs and a list of statements. To
@@ -15,10 +17,11 @@ import spoon.reflect.declaration.CtParameter;
 /* package */ class CodeBrick {
     // The method that hangs the code brick
     private final CtMethod<?> mMethod;
+    private final ModelList<CtImport> mImports;
 
     /**
      * Get the inputs of this code brick. Just take care. The inputs returned are already linked. So
-     * please be sure to clone if they are expected to used elsewhere.
+     * please be sure to clone if they are expected to use elsewhere.
      * 
      * @return The inputs of this code brick.
      */
@@ -33,7 +36,7 @@ import spoon.reflect.declaration.CtParameter;
 
     /**
      * Get all statements of this code brick. Just take care. The statements returned are already
-     * linked. So please be sure to clone if they are expected to used elsewhere.
+     * linked. So please be sure to clone if they are expected to use elsewhere.
      * 
      * @return All statements of this code brick.
      */
@@ -41,12 +44,23 @@ import spoon.reflect.declaration.CtParameter;
         return mMethod.getBody();
     }
 
+    /**
+     * Get required imports if using this code brick elsewhere. The imports returned are already
+     * linked. So please be sure to clone if they are expected to use elsewhere.
+     * 
+     * @return Set of imports
+     */
+    public ModelList<CtImport> unsafeGetImports() {
+        return mImports;
+    }
+
     @Override
     public String toString() {
         return mMethod.toString();
     }
 
-    /* package */ CodeBrick(CtMethod<?> cbMethod) {
+    /* package */ CodeBrick(CtMethod<?> cbMethod, ModelList<CtImport> imports) {
         mMethod = cbMethod;
+        mImports = imports;
     }
 }
