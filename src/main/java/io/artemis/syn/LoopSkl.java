@@ -3,6 +3,7 @@ package io.artemis.syn;
 import io.artemis.Artemis;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtStatement;
+import spoon.template.Local;
 
 /**
  * AbsLoopSkl is the abstract loop skeleton that every loop skeleton needs to implement. A loop
@@ -12,12 +13,13 @@ import spoon.reflect.code.CtStatement;
  */
 public interface LoopSkl {
 
+    @Local
     int getBlockCount();
 
+    @Local
     int getNamesCount();
 
+    @Local
     CtStatement instantiate(Artemis ax, int start, int step, int trip, String[] names,
             CtBlock<?>[] blocks);
-
-    default void placeholder(String id) {}
 }

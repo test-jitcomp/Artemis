@@ -23,9 +23,9 @@ public class LoopInserter extends StmtMutator {
         PPoint pp = PPoint.beforeStmt(mAx.getTestClass(), stmt);
 
         AxLog.v("Synthesizing new loops with LoopInserter's skeleton");
-        CtStatement loop = mAx.getLoopSyn().synLoop(pp, new LiLoopSkl());
+        CtStatement loop = mAx.getCodeSyn().synLoop(pp, new LiLoopSkl());
 
-        AxLog.v("Inserting the following loop before the statement to mutate:",
+        AxLog.v("Inserting the following loop before the statement to mutate",
                 (out, err) -> out.println(loop));
         stmt.insertBefore(loop);
     }

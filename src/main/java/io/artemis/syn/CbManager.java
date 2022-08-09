@@ -8,6 +8,7 @@ import java.util.function.Consumer;
 
 import io.artemis.AxChecker;
 import io.artemis.AxNames;
+import io.artemis.util.CannotReachHereException;
 import io.artemis.util.Spoons;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtLocalVariable;
@@ -157,6 +158,17 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
                 mInitzClsArray = doLoad(INITZ_CLASS_NAME_ARRAY);
             }
             return mInitzClsArray;
+        }
+
+        @Override
+        protected CtClass<?> kaseVoid(CtTypeReferenceImpl<?> type) {
+            throw new CannotReachHereException("Cannot have initializers for primitive type void");
+        }
+
+        @Override
+        protected CtClass<?> kaseBoxedVoid(CtTypeReferenceImpl<?> type) {
+            // We treat boxed void as a reference
+            return kaseRef(type);
         }
 
         @Override

@@ -9,9 +9,15 @@ import java.util.function.Consumer;
 import io.artemis.AxChecker;
 import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtCatch;
+import spoon.reflect.code.CtDo;
+import spoon.reflect.code.CtFor;
+import spoon.reflect.code.CtForEach;
+import spoon.reflect.code.CtIf;
 import spoon.reflect.code.CtLambda;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.code.CtTryWithResource;
+import spoon.reflect.code.CtWhile;
 import spoon.reflect.declaration.CtAnnotationType;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtConstructor;
@@ -198,8 +204,38 @@ public class PPoint {
                 }
 
                 @Override
+                public void visitCtTryWithResource(CtTryWithResource tryRes) {
+                    scopes.push(new LimitedLexScope(tryRes, top));
+                }
+
+                @Override
                 public void visitCtCatch(CtCatch katch) {
                     scopes.push(new LimitedLexScope(katch, top));
+                }
+
+                @Override
+                public void visitCtFor(CtFor forr) {
+                    scopes.push(new LimitedLexScope(forr, top));
+                }
+
+                @Override
+                public void visitCtForEach(CtForEach foreach) {
+                    scopes.push(new LimitedLexScope(foreach, top));
+                }
+
+                @Override
+                public void visitCtWhile(CtWhile whyle) {
+                    scopes.push(new LimitedLexScope(whyle, top));
+                }
+
+                @Override
+                public void visitCtDo(CtDo doo) {
+                    scopes.push(new LimitedLexScope(doo, top));
+                }
+
+                @Override
+                public void visitCtIf(CtIf iff) {
+                    scopes.push(new LimitedLexScope(iff, top));
                 }
 
                 @Override

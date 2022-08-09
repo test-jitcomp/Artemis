@@ -30,20 +30,21 @@ import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 /**
- * A synthesizer which aims to synthesize a (neutral) loop at a given program point. Currently, the
- * synthesizer prefers to synthesize a loop by using many program skeletons (the so-called code
- * brick: class CodeBrick), synthesizing a declaration for each input of the brick, and finally
- * connecting the brick with a loop header. To ensure neutral, it captures all potential exceptions
- * likely to be thrown by the brick and redirect the output (stdout, stderr) to /dev/null.
+ * A synthesizer which aims to synthesize code, especially (neutral) loops at a given program point.
+ * Currently, the synthesizer prefers to synthesize a loop by using many program skeletons (the
+ * so-called code brick: class CodeBrick), synthesizing a declaration for each input of the brick,
+ * and finally connecting the brick with a loop header. To ensure neutral, it captures all potential
+ * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to
+ * /dev/null.
  */
-public class LoopSyn {
+public class CodeSyn {
 
     private final Artemis mAx;
     private final AxRandom mRand;
     private final CbManager mCbManager;
     private final NewInstance mNewIns;
 
-    public LoopSyn(Artemis ax, File cbFolder) throws IOException {
+    public CodeSyn(Artemis ax, File cbFolder) throws IOException {
         mAx = ax;
         mRand = AxRandom.getInstance();
         mCbManager = new CbManager(cbFolder);
@@ -64,34 +65,50 @@ public class LoopSyn {
         Set<CtVariable<?>> reusedSet = new HashSet<>();
         CtBlock<?> mainLoop = synMainLoop(pp, skl, reusedSet);
 
-        // Create backups for our reused variables
-        List<CtLocalVariable<?>> backupList = new ArrayList<>(reusedSet.size());
+        // Transfer reused set to a list to enable a 1-1 mapping
         List<CtVariable<?>> reusedList = new ArrayList<>(reusedSet);
-        for (CtVariable<?> reusedVar : reusedList) {
-            CtLocalVariable<?> local = fact.createLocalVariable(reusedVar.getType().clone(),
-                    AxNames.getInstance().nextName(), (CtExpression) fact
-                            .createVariableRead(reusedVar.getReference(), reusedVar.isStatic()));
-            local.addModifier(ModifierKind.FINAL);
-            backupList.add(local);
-        }
-
+        // Create backups for our reused variables
+        List<CtLocalVariable<?>> backupList = synBackups(reusedList);
         // Create restores for our reused variables
-        List<CtStatement> restoreList = new ArrayList<>(reusedSet.size());
-        for (int i = 0; i < reusedList.size(); i++) {
-            CtVariable<?> var = reusedList.get(i);
-            CtLocalVariable<?> backup = backupList.get(i);
-            restoreList.add(fact.createVariableAssignment(var.getReference(), var.isStatic(),
-                    (CtExpression) fact.createVariableRead(backup.getReference(),
-                            backup.isStatic())));
-        }
+        List<CtStatement> restoreList = synRestores(reusedList, backupList);
 
-        // Out final loop should be ``backups; main loop; restores;``
+        // Out final loop should be ``backups; mainLoop; restores;``
         CtBlock<?> finLoop = fact.createBlock();
         backupList.forEach(finLoop::addStatement);
-        finLoop.addStatement(mainLoop);
+        Spoons.flat(mainLoop).forEach(finLoop::addStatement);
         restoreList.forEach(finLoop::addStatement);
 
         return finLoop;
+    }
+
+    public CtBlock<?> synCodeSeg(PPoint pp) {
+        CtBlock<?> seg = mAx.getSpoon().getFactory().createBlock();
+
+        // Choose a random code brick to instantiate
+        CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
+        AxLog.v("Using code brick", (out, ignoreUnused) -> {
+            out.println(cb);
+        });
+
+        // Create a declaration for every code brick input
+        Set<CtVariable<?>> reusedSet = new HashSet<>();
+        synForCbInputs(pp, cb, reusedSet).forEach(seg::addStatement);
+
+        // Add the code brick as body
+        synForCbStmts(cb).forEach(seg::addStatement);
+
+        // Add backups and restores
+        List<CtVariable<?>> reusedList = new ArrayList<>(reusedSet);
+        List<CtLocalVariable<?>> backupList = synBackups(reusedList);
+        backupList.forEach(seg::insertBegin);
+        List<CtStatement> restoreList = synRestores(reusedList, backupList);
+        restoreList.forEach(seg::addStatement);
+
+        return seg;
+    }
+
+    public CtExpression<?> synExpr(CtTypeReference<?> type) {
+        return mNewIns.newInstance(mAx.getSpoon().getFactory(), type);
     }
 
     private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, Set<CtVariable<?>> reusedSet) {
@@ -108,42 +125,60 @@ public class LoopSyn {
         for (int i = 0; i < blocks.length; i++) {
             // Choose a random code brick to instantiate
             CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
-            AxLog.v("Using code brick: ", (out, ignoreUnused) -> {
+            AxLog.v("Using code brick", (out, ignoreUnused) -> {
                 out.println(cb);
             });
 
-            // Create declarations for reset inputs that are not to be replaced, of currently cb
-            synDecls(pp, cb.unsafeGetInputs(), reusedSet).forEach(loop::addStatement);
-
-            // The very raw block is the code brick
-            CtBlock<?> blk = cb.unsafeGetStatements().clone();
-
-            // Wrap it with a try-catch to avoid unexpected exceptions from the brick
-            blk = ExHandleSkl.instantiate(mAx, /* exName= */ AxNames.getInstance().nextName(),
-                    /* tryBlock= */ blk);
-
-            // Redirect stdout and stderr to avoid unexpected outputs and recover afterwards
-            // TODO Optimize output redirection, maybe put a reference as the class field
-            blk = RedirectSkl.instantiate(mAx, /* outBkName= */ AxNames.getInstance().nextName(),
-                    /* errBkName= */ AxNames.getInstance().nextName(),
-                    /* newName= */ AxNames.getInstance().nextName(), blk);
+            // Create a declaration for every code brick input
+            synForCbInputs(pp, cb, reusedSet).forEach(loop::addStatement);
 
             // Append the loop with the code brick as body
-            blocks[i] = blk;
+            blocks[i] = mAx.getSpoon().getFactory().createBlock();
+            synForCbStmts(cb).forEach(blocks[i]::addStatement);
         }
 
-        loop.addStatement(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),
+        Spoons.flat(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),
                 /* step= */ mRand.nextInt(1, 2),
                 /* trip= */ mRand.nextInt(mAx.getMinLoopTrips(), mAx.getMaxLoopTrips()),
-                /* names= */ names, /* blocks= */ blocks));
+                /* names= */ names, /* blocks= */ blocks)).forEach(loop::addStatement);
 
         return loop;
     }
 
-    private List<CtStatement> synDecls(PPoint pp, CtParameter<?>[] inputs,
+    private List<CtLocalVariable<?>> synBackups(List<CtVariable<?>> reusedList) {
+        Factory fact = mAx.getSpoon().getFactory();;
+        List<CtLocalVariable<?>> backupList = new ArrayList<>(reusedList.size());
+        // Create a backup for each var in reusedList, 1-1 mapping
+        for (CtVariable<?> reusedVar : reusedList) {
+            CtLocalVariable<?> local = fact.createLocalVariable(reusedVar.getType().clone(),
+                    AxNames.getInstance().nextName(), (CtExpression) fact
+                            .createVariableRead(reusedVar.getReference(), reusedVar.isStatic()));
+            local.addModifier(ModifierKind.FINAL);
+            backupList.add(local);
+        }
+        return backupList;
+    }
+
+    private List<CtStatement> synRestores(List<CtVariable<?>> reusedList,
+            List<CtLocalVariable<?>> backupList) {
+        Factory fact = mAx.getSpoon().getFactory();
+        List<CtStatement> restoreList = new ArrayList<>(reusedList.size());
+        for (int i = 0; i < reusedList.size(); i++) {
+            // reusedList and backupList maintains a 1-1 mapping
+            CtVariable<?> var = reusedList.get(i);
+            CtLocalVariable<?> backup = backupList.get(i);
+            restoreList.add(fact.createVariableAssignment(var.getReference(), var.isStatic(),
+                    (CtExpression) fact.createVariableRead(backup.getReference(),
+                            backup.isStatic())));
+        }
+        return restoreList;
+    }
+
+    private List<CtStatement> synForCbInputs(PPoint pp, CodeBrick cb,
             Set<CtVariable<?>> reusedSet) {
         Factory fact = mAx.getSpoon().getFactory();
         CtMethod<?> meth = pp.getMethod();
+        CtParameter<?>[] inputs = cb.unsafeGetInputs();
 
         List<CtStatement> decls = new ArrayList<>();
         for (CtVariable<?> inp : inputs) {
@@ -209,7 +244,21 @@ public class LoopSyn {
         return decls;
     }
 
-    private CtExpression<?> synExpr(CtTypeReference<?> type) {
-        return mNewIns.newInstance(mAx.getSpoon().getFactory(), type);
+    private List<CtStatement> synForCbStmts(CodeBrick cb) {
+        // The very raw block is the code brick
+        CtBlock<?> blk = cb.unsafeGetStatements().clone();
+
+        // Wrap it with a try-catch to avoid unexpected exceptions from the brick
+        blk = ExHandleSkl.instantiate(mAx, /* exName= */ AxNames.getInstance().nextName(),
+                /* tryBlock= */ blk);
+
+        // Redirect stdout and stderr to avoid unexpected outputs and recover afterwards
+        // TODO Optimize output redirection, maybe put a reference as the class field
+        blk = RedirectSkl.instantiate(mAx, /* outBkName= */ AxNames.getInstance().nextName(),
+                /* errBkName= */ AxNames.getInstance().nextName(),
+                /* newName= */ AxNames.getInstance().nextName(), blk);
+
+        // Let's peel every statement from the block and return parent-uninitialized ones
+        return Spoons.flat(blk);
     }
 }

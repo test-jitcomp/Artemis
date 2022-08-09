@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 import io.artemis.AxRandom;
+import io.artemis.util.CannotReachHereException;
 import io.artemis.util.Spoons;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtNewArray;
@@ -34,6 +35,16 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
             }
         }
         return newArray;
+    }
+
+    @Override
+    protected CtExpression<?> kaseVoid(CtTypeReferenceImpl<?> type) {
+        throw new CannotReachHereException("Cannot create an instance for void primitive");
+    }
+
+    @Override
+    protected CtExpression<?> kaseBoxedVoid(CtTypeReferenceImpl<?> type) {
+        return mFact.createLiteral(null);
     }
 
     @Override

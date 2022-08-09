@@ -11,7 +11,9 @@ import spoon.template.Local;
 import spoon.template.Parameter;
 
 public class RedirectSkl extends BlockTemplate {
-
+    ///////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////// SKELETON DEFINITIONS //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     // Values to substitute
     @Parameter
     private CtBlock<?> _BLOCK_;
@@ -23,19 +25,6 @@ public class RedirectSkl extends BlockTemplate {
     private String _ERR_BK_NAME_;
     @Parameter
     private String _NEW_NAME_;
-
-    @Local
-    public static CtBlock<?> instantiate(Artemis ax, String outBkName, String errBkName,
-            String newName, CtBlock<?> block) {
-        RedirectSkl skl = new RedirectSkl();
-
-        skl._OUT_BK_NAME_ = outBkName;
-        skl._ERR_BK_NAME_ = errBkName;
-        skl._NEW_NAME_ = newName;
-        skl._BLOCK_ = block;
-
-        return skl.apply(ax.getTestClass());
-    }
 
     @Override
     public void block() throws Throwable {
@@ -52,6 +41,22 @@ public class RedirectSkl extends BlockTemplate {
         _BLOCK_.S();
         System.setOut(_OUT_BK_NAME_);
         System.setErr(_ERR_BK_NAME_);
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+
+    @Local
+    public static CtBlock<?> instantiate(Artemis ax, String outBkName, String errBkName,
+            String newName, CtBlock<?> block) {
+        RedirectSkl skl = new RedirectSkl();
+
+        skl._OUT_BK_NAME_ = outBkName;
+        skl._ERR_BK_NAME_ = errBkName;
+        skl._NEW_NAME_ = newName;
+        skl._BLOCK_ = block;
+
+        return skl.apply(ax.getTestClass());
     }
 
     @Local

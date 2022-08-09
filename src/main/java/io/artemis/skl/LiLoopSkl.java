@@ -12,6 +12,10 @@ import spoon.template.Parameter;
 import spoon.template.StatementTemplate;
 
 public class LiLoopSkl extends StatementTemplate implements LoopSkl {
+    ///////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////// SKELETON DEFINITIONS //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    // Loop headers to substitute
     @Parameter
     private CtLiteral<Integer> _START_;
     @Parameter
@@ -19,13 +23,24 @@ public class LiLoopSkl extends StatementTemplate implements LoopSkl {
     @Parameter
     private CtLiteral<Integer> _TRIP_;
 
-    // Blocks to substitute
+    // Blocks to synthesize and substitute
     @Parameter
     private CtBlock<?> _BODY_;
 
-    // Names to substitute
+    // Names to synthesize and substitute
     @Parameter
     private String _I_NAME_;
+
+    @Override
+    public void statement() throws Throwable {
+        for (int _I_NAME_ = _START_.S(); _I_NAME_ < _START_.S() + _TRIP_.S(); _I_NAME_ +=
+                _STEP_.S()) {
+            _BODY_.S();
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     @Local
     @Override
@@ -44,7 +59,7 @@ public class LiLoopSkl extends StatementTemplate implements LoopSkl {
     public CtStatement instantiate(Artemis ax, int start, int step, int trip, String[] names,
             CtBlock<?>[] blocks) {
         AxChecker.check(names.length == getNamesCount(), "Insufficient names");
-        AxChecker.check(blocks.length == getNamesCount(), "Insufficient blocks");
+        AxChecker.check(blocks.length == getBlockCount(), "Insufficient blocks");
 
         Factory fact = ax.getSpoon().getFactory();
 
@@ -55,13 +70,5 @@ public class LiLoopSkl extends StatementTemplate implements LoopSkl {
         _BODY_ = blocks[0];
 
         return apply(ax.getTestClass());
-    }
-
-    @Override
-    public void statement() throws Throwable {
-        for (int _I_NAME_ = _START_.S(); _I_NAME_ < _START_.S() + _TRIP_.S(); _I_NAME_ +=
-                _STEP_.S()) {
-            _BODY_.S();
-        }
     }
 }

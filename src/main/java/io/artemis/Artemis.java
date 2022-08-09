@@ -8,7 +8,7 @@ import java.util.Map;
 
 import io.artemis.pol.MutationPolicy;
 import io.artemis.pol.PolicyFactory;
-import io.artemis.syn.LoopSyn;
+import io.artemis.syn.CodeSyn;
 import io.artemis.util.CannotReachHereException;
 import io.artemis.util.Options;
 import spoon.Launcher;
@@ -60,7 +60,7 @@ public class Artemis {
     static {
         final String SKL_FOLDER_NAME = "skeletons";
         final String[] SKL_NAMES = new String[] {"LiLoopSkl.java", "SwLoopSkl.java",
-                "ExHandleSkl.java", "RedirectSkl.java"};
+                "MiLoopSkl.java", "MiCtrlSeqSkl.java", "ExHandleSkl.java", "RedirectSkl.java"};
         ClassLoader loader = Artemis.class.getClassLoader();
         try {
             for (String sklName : SKL_NAMES) {
@@ -91,7 +91,7 @@ public class Artemis {
 
     // Program related stuff
     private MutationPolicy mPolicy;
-    private LoopSyn mLoopSyn;
+    private CodeSyn mCodeSyn;
 
     private Launcher mSpoon;
     private CtCompilationUnit mTestCompU;
@@ -111,8 +111,8 @@ public class Artemis {
         return mMaxLoopTrips;
     }
 
-    public LoopSyn getLoopSyn() {
-        return mLoopSyn;
+    public CodeSyn getCodeSyn() {
+        return mCodeSyn;
     }
 
     public Launcher getSpoon() {
@@ -190,7 +190,7 @@ public class Artemis {
 
         mPolicy = PolicyFactory.create(mPolicyName, this, mExtraOpts);
         try {
-            mLoopSyn = new LoopSyn(this, mCbFolder);
+            mCodeSyn = new CodeSyn(this, mCbFolder);
         } catch (IOException e) {
             AxLog.e(e.getMessage());
             return false;

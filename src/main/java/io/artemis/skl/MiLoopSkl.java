@@ -1,18 +1,23 @@
 package io.artemis.skl;
 
+import java.util.List;
+
 import io.artemis.Artemis;
 import io.artemis.AxChecker;
 import io.artemis.syn.LoopSkl;
 import io.artemis.syn.SklPh;
 import spoon.reflect.code.CtBlock;
+import spoon.reflect.code.CtExpression;
+import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.factory.Factory;
 import spoon.template.BlockTemplate;
 import spoon.template.Local;
 import spoon.template.Parameter;
 
-public class SwLoopSkl extends BlockTemplate implements LoopSkl {
+public class MiLoopSkl extends BlockTemplate implements LoopSkl {
     ///////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////// SKELETON DEFINITIONS //////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -33,19 +38,15 @@ public class SwLoopSkl extends BlockTemplate implements LoopSkl {
     // Names to synthesize and substitute
     @Parameter
     private String _I_NAME_;
-    @Parameter
-    private String _EXEC_NAME_;
 
     @Override
     public void block() throws Throwable {
-        boolean _EXEC_NAME_ = false;
         for (int _I_NAME_ = _START_.S(); _I_NAME_ < _START_.S() + _TRIP_.S(); _I_NAME_ +=
                 _STEP_.S()) {
             _PRE_BODY_.S();
-            if (!_EXEC_NAME_) {
-                SklPh.placeholder("<exec_stmt>");
-                _EXEC_NAME_ = true;
-            }
+            SklPh.placeholder("<enable_ctrl>");
+            SklPh.placeholder("<invoc_meth>");
+            SklPh.placeholder("<disable_ctrl>");
             _POST_BODY_.S();
         }
     }
@@ -62,7 +63,7 @@ public class SwLoopSkl extends BlockTemplate implements LoopSkl {
     @Local
     @Override
     public int getNamesCount() {
-        return 2;
+        return 1;
     }
 
     @Local
@@ -78,14 +79,28 @@ public class SwLoopSkl extends BlockTemplate implements LoopSkl {
         _STEP_ = fact.createLiteral(step);
         _TRIP_ = fact.createLiteral(trip);
         _I_NAME_ = names[0];
-        _EXEC_NAME_ = names[1];
         _PRE_BODY_ = blocks[0];
         _POST_BODY_ = blocks[1];
 
         return apply(ax.getTestClass());
     }
 
-    public static void wrapStmt(CtStatement loop, CtStatement stmt) {
-        SklPh.substitute(loop, "<exec_stmt>", stmt);
+    @Local
+    public static void enableCtrl(CtStatement loop, CtField<Boolean> ctrl, Factory fact) {
+        SklPh.substitute(loop, "<enable_ctrl>", fact.createVariableAssignment(ctrl.getReference(),
+                ctrl.isStatic(), fact.createLiteral(true)));
+    }
+
+    @Local
+    public static void disableCtrl(CtStatement loop, CtField<Boolean> ctrl, Factory fact) {
+        SklPh.substitute(loop, "<disable_ctrl>", fact.createVariableAssignment(ctrl.getReference(),
+                ctrl.isStatic(), fact.createLiteral(false)));
+    }
+
+    @Local
+    public static void invocMeth(CtStatement loop, CtInvocation<?> invoc,
+            List<CtExpression<?>> args, Factory fact) {
+        SklPh.substitute(loop, "<invoc_meth>", fact.createInvocation(invoc.getTarget().clone(),
+                invoc.getExecutable().clone(), args));
     }
 }

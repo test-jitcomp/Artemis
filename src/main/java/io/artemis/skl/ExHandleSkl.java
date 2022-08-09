@@ -8,6 +8,9 @@ import spoon.template.Local;
 import spoon.template.Parameter;
 
 public class ExHandleSkl extends BlockTemplate {
+    ///////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////// SKELETON DEFINITIONS //////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
     // Values to substitute
     @Parameter
     private CtBlock<?> _TRY_BLOCK_;
@@ -17,6 +20,20 @@ public class ExHandleSkl extends BlockTemplate {
     // Names to substitute
     @Parameter
     private String _EX_NAME_;
+
+    @Override
+    public void block() throws Throwable {
+        try {
+            _TRY_BLOCK_.S();
+        } catch (Throwable _EX_NAME_) {
+            /* DO NOTHING */
+        } finally {
+            _FINALLY_BLOCK_.S();
+        }
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////////////////
 
     @Local
     public static CtBlock<?> instantiate(Artemis ax, String exName, CtStatement tryStmt) {
@@ -45,17 +62,6 @@ public class ExHandleSkl extends BlockTemplate {
         skl._FINALLY_BLOCK_ = finallyBlock;
 
         return skl.apply(ax.getTestClass());
-    }
-
-    @Override
-    public void block() throws Throwable {
-        try {
-            _TRY_BLOCK_.S();
-        } catch (Throwable _EX_NAME_) {
-            /* DO NOTHING */
-        } finally {
-            _FINALLY_BLOCK_.S();
-        }
     }
 
     @Local

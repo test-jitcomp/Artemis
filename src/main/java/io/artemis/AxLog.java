@@ -42,7 +42,7 @@ public class AxLog {
 
     public static void v(String header, LogBlock b) {
         if (sLevel >= LEVEL_VERBOSE) {
-            v(header);
+            v(header + ": ");
             v("-----");
             b.log(sStdout, sStderr);
             v("-----");

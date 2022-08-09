@@ -1,12 +1,20 @@
 package io.artemis.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import io.artemis.Artemis;
 import io.artemis.AxChecker;
 import io.artemis.AxLog;
 import spoon.FluentLauncher;
 import spoon.refactoring.CtRenameGenericVariableRefactoring;
 import spoon.refactoring.RefactoringException;
+import spoon.reflect.code.CtStatement;
+import spoon.reflect.code.CtStatementList;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
@@ -16,7 +24,11 @@ public class Spoons {
 
     public static abstract class TypeSwitch<T> {
 
+        // TODO Add void type?
+
         protected abstract T kaseArray(CtArrayTypeReferenceImpl<?> type);
+
+        protected abstract T kaseBoxedVoid(CtTypeReferenceImpl<?> type);
 
         protected abstract T kaseBoxedBoolean(CtTypeReferenceImpl<?> type);
 
@@ -33,6 +45,8 @@ public class Spoons {
         protected abstract T kaseBoxedFloat(CtTypeReferenceImpl<?> type);
 
         protected abstract T kaseBoxedDouble(CtTypeReferenceImpl<?> type);
+
+        protected abstract T kaseVoid(CtTypeReferenceImpl<?> type);
 
         protected abstract T kaseBoolean(CtTypeReferenceImpl<?> type);
 
@@ -59,6 +73,10 @@ public class Spoons {
                 return kaseArray((CtArrayTypeReferenceImpl<?>) type);
             } else {
                 switch (type.getQualifiedName()) {
+                    case "void":
+                        return kaseVoid((CtTypeReferenceImpl<?>) type);
+                    case "java.lang.Void":
+                        return kaseBoxedVoid((CtTypeReferenceImpl<?>) type);
                     case "boolean":
                         return kaseBoolean((CtTypeReferenceImpl<?>) type);
                     case "java.lang.Boolean":
@@ -100,6 +118,24 @@ public class Spoons {
         }
     }
 
+    public static String getSimpleName(CtField<?> field) {
+        return field.getDeclaringType().getQualifiedName() + "." + field.getSimpleName();
+    }
+
+    public static String getSimpleName(CtMethod<?> meth) {
+        return meth.getDeclaringType().getQualifiedName() + "::" + meth.getSimpleName() + "()";
+    }
+
+    public static List<CtStatement> flat(CtStatement blk) {
+        if (blk instanceof CtStatementList) {
+            List<CtStatement> blkStmts = new ArrayList<>(((CtStatementList) blk).getStatements());
+            blkStmts.forEach(CtElement::delete);
+            return blkStmts;
+        } else {
+            return List.of(blk);
+        }
+    }
+
     public static CtClass<?> ensureClassLoaded(String path, String className) {
         CtClass<?> clazz =
                 new FluentLauncher().inputResource(path).complianceLevel(Artemis.JAVA_VERSION)
@@ -119,10 +155,24 @@ public class Spoons {
         }
     }
 
+    public static boolean isVoidType(CtTypeReference<?> type) {
+        return type.getQualifiedName().equals("void");
+    }
+
     public static boolean isPrimitiveAlikeType(CtTypeReference<?> type) {
         return new TypeSwitch<Boolean>() {
             @Override
             public Boolean kaseArray(CtArrayTypeReferenceImpl<?> type) {
+                return false;
+            }
+
+            @Override
+            protected Boolean kaseVoid(CtTypeReferenceImpl<?> type) {
+                return false;
+            }
+
+            @Override
+            protected Boolean kaseBoxedVoid(CtTypeReferenceImpl<?> type) {
                 return false;
             }
 
