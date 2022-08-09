@@ -4,12 +4,17 @@ import io.artemis.Artemis;
 import io.artemis.AxLog;
 import io.artemis.skl.SwLoopSkl;
 import io.artemis.syn.PPoint;
+import spoon.reflect.code.CtAbstractInvocation;
 import spoon.reflect.code.CtBreak;
 import spoon.reflect.code.CtContinue;
-import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.code.CtStatementList;
 import spoon.reflect.code.CtYieldStatement;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtInterface;
+import spoon.reflect.declaration.CtVariable;
+import spoon.reflect.visitor.filter.TypeFilter;
 
 public class StmtWrapper extends StmtMutator {
 
@@ -19,10 +24,25 @@ public class StmtWrapper extends StmtMutator {
 
     @Override
     protected boolean canMutate(CtStatement stmt) {
-        // Never wrap any declarations and flow-altering statements
-        return !(stmt instanceof CtLocalVariable) && !(stmt instanceof CtBreak)
-                && !(stmt instanceof CtContinue) && !(stmt instanceof CtReturn)
-                && !(stmt instanceof CtYieldStatement);
+        // We don't prefer blocks since they often contain unpredictable things
+        if (stmt instanceof CtStatementList) {
+            return false;
+        }
+
+        // Never wrap any variable and type declarations
+        if ((stmt instanceof CtVariable) || (stmt instanceof CtClass)
+                || (stmt instanceof CtInterface)) {
+            return false;
+        }
+
+        // Never wrap any flow-altering statements
+        if ((stmt instanceof CtBreak) || (stmt instanceof CtContinue) || (stmt instanceof CtReturn)
+                || (stmt instanceof CtYieldStatement)) {
+            return false;
+        }
+
+        // Never wrap any method and constructor invocations
+        return stmt.getElements(new TypeFilter<>(CtAbstractInvocation.class)).size() == 0;
     }
 
     @Override
@@ -35,7 +55,7 @@ public class StmtWrapper extends StmtMutator {
         AxLog.v("Wrapping the statement by the following loop", (out, err) -> out.println(loop));
         // Replace the statement to wrap stmt by our synthetic loop
         stmt.replace(loop);
-        // Substitute the placeholder by the our statement to wrap stmt
+        // Substitute the placeholder by our statement to wrap stmt
         SwLoopSkl.wrapStmt(loop, stmt);
     }
 }
