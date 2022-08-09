@@ -6,7 +6,9 @@ import java.util.List;
 import io.artemis.Artemis;
 import io.artemis.AxChecker;
 import io.artemis.AxLog;
-import spoon.FluentLauncher;
+import spoon.Launcher;
+import spoon.OutputType;
+import spoon.SpoonAPI;
 import spoon.refactoring.CtRenameGenericVariableRefactoring;
 import spoon.refactoring.RefactoringException;
 import spoon.reflect.code.CtStatement;
@@ -23,8 +25,6 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 public class Spoons {
 
     public static abstract class TypeSwitch<T> {
-
-        // TODO Add void type?
 
         protected abstract T kaseArray(CtArrayTypeReferenceImpl<?> type);
 
@@ -137,9 +137,13 @@ public class Spoons {
     }
 
     public static CtClass<?> ensureClassLoaded(String path, String className) {
-        CtClass<?> clazz =
-                new FluentLauncher().inputResource(path).complianceLevel(Artemis.JAVA_VERSION)
-                        .buildModel().getRootPackage().getType(className);
+        SpoonAPI spoon = new Launcher();
+        spoon.getEnvironment().setComplianceLevel(Artemis.JAVA_VERSION);
+        spoon.getEnvironment().setNoClasspath(true);
+        spoon.getEnvironment().setOutputType(OutputType.NO_OUTPUT);
+        spoon.getEnvironment().setCopyResources(false);
+        spoon.addInputResource(path);
+        CtClass<?> clazz = spoon.buildModel().getRootPackage().getType(className);
         AxChecker.check(clazz != null, "Class " + className + " is not found in file: " + path);
         return clazz;
     }

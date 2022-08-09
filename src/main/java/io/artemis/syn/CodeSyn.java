@@ -34,8 +34,9 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * Currently, the synthesizer prefers to synthesize a loop by using many program skeletons (the
  * so-called code brick: class CodeBrick), synthesizing a declaration for each input of the brick,
  * and finally connecting the brick with a loop header. To ensure neutral, it captures all potential
- * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to
- * /dev/null.
+ * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to null.
+ * 
+ * TODO What if the declarations (when newing something like SocketAddress) throw exceptions?
  */
 public class CodeSyn {
 

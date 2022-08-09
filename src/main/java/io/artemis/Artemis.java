@@ -12,6 +12,7 @@ import io.artemis.syn.CodeSyn;
 import io.artemis.util.CannotReachHereException;
 import io.artemis.util.Options;
 import spoon.Launcher;
+import spoon.SpoonAPI;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtCompilationUnit;
 import spoon.reflect.declaration.CtType;
@@ -33,7 +34,7 @@ public class Artemis {
             + "  -M MAX_TRIPS   minimum loop trips (default: 100,000,000)\n"
             + "  -s SEED        random seed (default: current time in ms)\n"
             + "  -p POLICY      mutation policy, one of: artemis (default: artemis)\n"
-            + "  -Xkey:value    extra options, available options are:\n"
+            + "  -Xkey:value    extra options, currently no available options\n"
             + "  -v             verbose mode (default: false)\n"
             + "  -V             more verbose (vverbose) mode, implies -v (default: false)\n"
             + "  -h             show this message\n"
@@ -115,7 +116,7 @@ public class Artemis {
         return mCodeSyn;
     }
 
-    public Launcher getSpoon() {
+    public SpoonAPI getSpoon() {
         return mSpoon;
     }
 
@@ -137,6 +138,8 @@ public class Artemis {
         mSpoon.getEnvironment().setCommentEnabled(false);
         // Let's temporarily disable all other classpath (e.g., rt.jar) other than the parent folder
         mSpoon.getEnvironment().setSourceClasspath(new String[] {mInput.getParent()});
+        // Don't copy any resource when output, just the given test file
+        mSpoon.getEnvironment().setCopyResources(false);
         mSpoon.addInputResource(mInput.getAbsolutePath());
         mSpoon.addTemplateResource(SKELETON_FOLDER);
         mSpoon.setSourceOutputDirectory(mOutput);
