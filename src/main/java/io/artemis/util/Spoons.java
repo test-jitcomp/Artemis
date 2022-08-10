@@ -138,6 +138,19 @@ public class Spoons {
         }
     }
 
+    // Insert statement ``before'' after the statement where ``ele'' is residing
+    public static void insertBeforeStmt(CtElement ele, CtStatement before) {
+        CtElement after = ele;
+        while (after != null) {
+            if (after instanceof CtStatement && after.getParent() instanceof CtStatementList) {
+                break;
+            }
+            after = after.getParent();
+        }
+        AxChecker.check(after != null, "Element does not reside in a statement");
+        ((CtStatement) after).insertBefore(before);
+    }
+
     public static CtClass<?> ensureClassLoaded(String path, String className) {
         for (CtType<?> type : ensureCompUnitLoaded(path).getDeclaredTypes()) {
             if (type instanceof CtClass && type.getQualifiedName().equals(className)) {

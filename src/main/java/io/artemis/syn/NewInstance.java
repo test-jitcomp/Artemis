@@ -169,6 +169,11 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
             return mFact.createLiteral(null);
         }
 
+        // If the constructor explicitly throw, give it a null
+        if (defCtor.getExceptionTypes().length != 0) {
+            return mFact.createLiteral(null);
+        }
+
         // There's a default constructor, then it's safe for us to new an instance
         return mFact.createConstructorCall(type);
     }

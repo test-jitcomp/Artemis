@@ -16,8 +16,13 @@ import spoon.support.util.ModelList;
  */
 /* package */ class CodeBrick {
     // The method that hangs the code brick
+    private final int mId;
     private final CtMethod<?> mMethod;
     private final ModelList<CtImport> mImports;
+
+    public int getId() {
+        return mId;
+    }
 
     /**
      * Get the inputs of this code brick. Just take care. The inputs returned are already linked. So
@@ -59,7 +64,8 @@ import spoon.support.util.ModelList;
         return mMethod.toString();
     }
 
-    /* package */ CodeBrick(CtMethod<?> cbMethod, ModelList<CtImport> imports) {
+    /* package */ CodeBrick(int id, CtMethod<?> cbMethod, ModelList<CtImport> imports) {
+        mId = id;
         mMethod = cbMethod;
         mImports = imports;
     }

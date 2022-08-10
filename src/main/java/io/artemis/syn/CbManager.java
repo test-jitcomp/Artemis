@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import io.artemis.AxChecker;
@@ -58,6 +60,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     private static final String CB_METHOD_NAME = "method";
 
     // Code bricks: lazy load
+    private final CbLazyLoader mCbLoader;
+    private final Map<Integer, CodeBrick> mCodeBricks;
     private final File mCbFolder;
     private int mCbCount;
 
@@ -77,10 +81,23 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     private CtClass<?> mInitzClsString;
 
     public CbManager(File cbFolder) {
+        mCbLoader = new CbLazyLoader();
+        mCodeBricks = new HashMap<>();
         mCbFolder = cbFolder;
         mCbCount = -1;
-        mInitzCount = -1;
         mInitzLoader = new InitzLazyLoader();
+        mInitzCount = -1;
+        mInitzClsArray = null;
+        mInitzClsRef = null;
+        mInitzClsByte = null;
+        mInitzClsBoolean = null;
+        mInitzClsShort = null;
+        mInitzClsChar = null;
+        mInitzClsInt = null;
+        mInitzClsLong = null;
+        mInitzClsFloat = null;
+        mInitzClsDouble = null;
+        mInitzClsString = null;
     }
 
     public void init() throws IOException {
@@ -120,46 +137,63 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     }
 
     public CodeBrick getCodeBrick(int index) {
-        String cbClassName = CB_CLASS_NAME_PREFIX + index;
-        File cbFile =
-                new File(mCbFolder.getAbsolutePath() + File.separator + cbClassName + ".java");
-        AxChecker.check(cbFile.exists(), "Code brick class not found: " + cbFile.getAbsolutePath());
+        AxChecker.check(0 <= index && index < mCbCount,
+                "Code brick with index " + index + " does not exist");
+        mCbLoader.ensureLoaded(index);
+        return mCodeBricks.get(index);
+    }
 
-        CtCompilationUnit cbUnit = Spoons.ensureCompUnitLoaded(cbFile.getAbsolutePath());
+    private class CbLazyLoader {
+        public void ensureLoaded(int index) {
+            if (mCodeBricks.containsKey(index)) {
+                return;
+            }
 
-        // We assume that the code brick class have the same name as the file (no packages)
-        CtType<?> mainType = cbUnit.getMainType();
-        AxChecker.check(
-                mainType instanceof CtClass && cbClassName.equals(mainType.getQualifiedName()),
-                "The code brick has >=1 code bricks");
-        CtClass<?> cbClass = (CtClass<?>) mainType;
+            String cbClassName = CB_CLASS_NAME_PREFIX + index;
+            File cbFile =
+                    new File(mCbFolder.getAbsolutePath() + File.separator + cbClassName + ".java");
+            AxChecker.check(cbFile.exists(),
+                    "Code brick class not found: " + cbFile.getAbsolutePath());
 
-        CtMethod<?> cbMethod = null;
-        try {
-            cbMethod = cbClass.getMethodsByName(CB_METHOD_NAME).get(0);
-        } catch (IndexOutOfBoundsException e) {
-            // noinspection ConstantConditions
-            AxChecker.check(false, "No code brick namely " + CB_METHOD_NAME + "() found");
+            CtCompilationUnit cbUnit = Spoons.ensureCompUnitLoaded(cbFile.getAbsolutePath());
+
+            // We assume that the code brick class have the same name as the file (no packages)
+            CtType<?> mainType = cbUnit.getMainType();
+            AxChecker.check(
+                    mainType instanceof CtClass && cbClassName.equals(mainType.getQualifiedName()),
+                    "The code brick has >=1 code bricks");
+            CtClass<?> cbClass = (CtClass<?>) mainType;
+
+            CtMethod<?> cbMethod = null;
+            try {
+                cbMethod = cbClass.getMethodsByName(CB_METHOD_NAME).get(0);
+            } catch (IndexOutOfBoundsException e) {
+                // noinspection ConstantConditions
+                AxChecker.check(false, "No code brick namely " + CB_METHOD_NAME + "() found");
+            }
+            AxChecker.check(cbMethod != null,
+                    "No code brick namely " + CB_METHOD_NAME + "() found");
+            AxChecker.check(cbMethod.getBody() != null, "No statements found in code brick "
+                    + cbClassName + "#" + CB_METHOD_NAME + "()");
+
+            // Rename every parameter (i.e., input of the brick) and local variable and catch
+            // variable
+            // such that we don't conflict when instantiating the brick and inserting elsewhere.
+            for (CtParameter<?> param : cbMethod.getParameters()) {
+                Spoons.renameVariable(param, AxNames.getInstance().nextName());
+            }
+            for (CtLocalVariable<?> local : cbMethod
+                    .getElements(new TypeFilter<>(CtLocalVariable.class))) {
+                Spoons.renameVariable(local, AxNames.getInstance().nextName());
+            }
+            for (CtCatchVariable<?> ex : cbMethod
+                    .getElements(new TypeFilter<>(CtCatchVariable.class))) {
+                Spoons.renameVariable(ex, AxNames.getInstance().nextName());
+            }
+
+            // Save to the cache
+            mCodeBricks.put(index, new CodeBrick(index, cbMethod, cbUnit.getImports()));
         }
-        AxChecker.check(cbMethod != null, "No code brick namely " + CB_METHOD_NAME + "() found");
-        AxChecker.check(cbMethod.getBody() != null,
-                "No statements found in code brick " + cbClassName + "#" + CB_METHOD_NAME + "()");
-
-        // Rename every parameter (i.e., input of the brick) and local variable and catch variable
-        // such that we don't conflict when instantiating the brick and inserting elsewhere.
-        for (CtParameter<?> param : cbMethod.getParameters()) {
-            Spoons.renameVariable(param, AxNames.getInstance().nextName());
-        }
-        for (CtLocalVariable<?> local : cbMethod
-                .getElements(new TypeFilter<>(CtLocalVariable.class))) {
-            Spoons.renameVariable(local, AxNames.getInstance().nextName());
-        }
-        for (CtCatchVariable<?> ex : cbMethod
-                .getElements(new TypeFilter<>(CtCatchVariable.class))) {
-            Spoons.renameVariable(ex, AxNames.getInstance().nextName());
-        }
-
-        return new CodeBrick(cbMethod, cbUnit.getImports());
     }
 
     private class InitzLazyLoader extends Spoons.TypeSwitch<CtClass<?>> {

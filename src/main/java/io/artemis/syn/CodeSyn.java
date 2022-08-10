@@ -37,7 +37,7 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * and finally connecting the brick with a loop header. To ensure neutral, it captures all potential
  * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to null.
  * 
- * TODO What if the declarations (when newing something like SocketAddress) throw exceptions?
+ * TODO What if the declarations (when newing something) throw RuntimeExceptions?
  */
 public class CodeSyn {
 
@@ -97,7 +97,7 @@ public class CodeSyn {
 
         // Choose a random code brick to instantiate
         CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
-        AxLog.v("Using code brick", (out, ignoreUnused) -> {
+        AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
             out.println(cb);
         });
 
@@ -146,7 +146,7 @@ public class CodeSyn {
         for (int i = 0; i < blocks.length; i++) {
             // Choose a random code brick to instantiate
             CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
-            AxLog.v("Using code brick", (out, ignoreUnused) -> {
+            AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
                 out.println(cb);
             });
 

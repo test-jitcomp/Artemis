@@ -101,8 +101,8 @@ public class MethInvocator extends MethMutator {
         List<CtExpression<?>> args =
                 invoc.getArguments().stream().map(CtExpression::clone).collect(Collectors.toList());
         MiLoopSkl.invocMeth(loop, invoc, args, fact);
-        // Insert the loop right before the invocation
-        invoc.insertBefore(loop);
+        // Insert the loop right before the invocation statement
+        Spoons.insertBeforeStmt(invoc, loop);
 
         // Add required imports to our tests
         mAx.getTestCompUnit().getImports().addAll(imports);
