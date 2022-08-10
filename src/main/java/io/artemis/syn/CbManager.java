@@ -36,7 +36,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
  *     namely CB_METHOD_NAME saving all the brick. Parameters of that method are inputs (holes).
  * (2) All initializers are managed according to their types. Each initializer should be set as a
  *     field of its specific INITZ_CLASS_NAME_{type} class. For initializers of primitive types,
- *     should guarantee that the initializer can be safely assigned to the boxed type.
+ *     should guarantee that the initializer can be safely assigned to the boxed type. Should ensure
+ *     that all initializers don't throw any RuntimeExceptions like NPE, NegativeArraySizeException.
  * // @formatter:on
  */
 /* package */ class CbManager {

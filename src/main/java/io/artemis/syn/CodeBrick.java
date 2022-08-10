@@ -15,9 +15,10 @@ import spoon.support.util.ModelList;
  * imports in its setting by Spoon.getEnvironment().setAutoImports(true)).
  */
 /* package */ class CodeBrick {
-    // The method that hangs the code brick
     private final int mId;
+    // The method that hangs the code brick
     private final CtMethod<?> mMethod;
+    // Required imports when using this brick elsewhere
     private final ModelList<CtImport> mImports;
 
     public int getId() {

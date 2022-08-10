@@ -8,11 +8,16 @@ import io.artemis.AxLog;
 import io.artemis.skl.SwLoopSkl;
 import io.artemis.syn.PPoint;
 import spoon.reflect.code.CtAbstractInvocation;
+import spoon.reflect.code.CtBodyHolder;
 import spoon.reflect.code.CtBreak;
 import spoon.reflect.code.CtContinue;
+import spoon.reflect.code.CtIf;
+import spoon.reflect.code.CtNewClass;
 import spoon.reflect.code.CtReturn;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtStatementList;
+import spoon.reflect.code.CtSwitch;
+import spoon.reflect.code.CtSynchronized;
 import spoon.reflect.code.CtYieldStatement;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtImport;
@@ -28,8 +33,12 @@ public class StmtWrapper extends StmtMutator {
 
     @Override
     protected boolean canMutate(CtStatement stmt) {
-        // We don't prefer blocks since they often contain unpredictable things
-        if (stmt instanceof CtStatementList) {
+        // We only prefer to wrap single statement. So we don't like block-alike e.g. if/loops/...
+        // since they often contain unpredictable things like control-flow altering (continue/break)
+        // which, once wrapped, may break the semantics
+        if (stmt instanceof CtStatementList || stmt instanceof CtBodyHolder || stmt instanceof CtIf
+                || stmt instanceof CtSwitch || stmt instanceof CtNewClass
+                || stmt instanceof CtSynchronized) {
             return false;
         }
 
