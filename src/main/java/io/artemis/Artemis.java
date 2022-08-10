@@ -35,6 +35,7 @@ public class Artemis {
             + "  -s SEED        random seed (default: current time in ms)\n"
             + "  -p POLICY      mutation policy, one of: artemis (default: artemis)\n"
             + "  -Xkey:value    extra options, currently no available options\n"
+            + "  -r             dry-run; will not write mutant to output dir (default: false)\n"
             + "  -v             verbose mode (default: false)\n"
             + "  -V             more verbose (vverbose) mode, implies -v (default: false)\n"
             + "  -h             show this message\n"
@@ -85,6 +86,7 @@ public class Artemis {
     private File mOutput;
 
     // Options: with default values
+    private boolean mDryRun = false;
     private int mMinLoopTrips = MIN_LOOP_TRIPS;
     private int mMaxLoopTrips = MAX_LOOP_TRIPS;
     private PolicyFactory.PolicyName mPolicyName = PolicyFactory.PolicyName.ARTEMIS;
@@ -164,8 +166,12 @@ public class Artemis {
         AxLog.v("Applying policy (" + mPolicyName + ") to mutate input");
         mPolicy.apply(mTestClass);
 
-        AxLog.v("Writing mutant to " + mOutput + File.separator + mInput.getName());
-        mSpoon.prettyprint();
+        if (mDryRun) {
+            AxLog.v("Writing (dry-run) mutant to " + mOutput + File.separator + mInput.getName());
+        } else {
+            AxLog.v("Writing mutant to " + mOutput + File.separator + mInput.getName());
+            mSpoon.prettyprint();
+        }
     }
 
     private boolean processOptions(Options options) {
@@ -237,6 +243,10 @@ public class Artemis {
                 case "--output":
                 case "-o":
                     mOutput = options.getFile(opt);
+                    break;
+                case "--dry-run":
+                case "-r":
+                    mDryRun = true;
                     break;
                 case "--seed":
                 case "-s":
