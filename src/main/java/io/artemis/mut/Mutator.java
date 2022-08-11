@@ -11,9 +11,20 @@ public abstract class Mutator {
         mAx = ax;
     }
 
-    public void set(Artemis.ExtraOpts settings) {}
+    public void setExtraOptions(Artemis.ExtraOpts opts) {}
 
-    public abstract boolean canMutate(CtElement element);
+    /**
+     * Test whether the given element can be mutated by this mutator. Always call this method before
+     * calling mutate(); otherwise, the mutator cannot guarantee the mutation behavior. When
+     * overriding this method, always call super().
+     * 
+     * @param element The element to mutate
+     * @return Return true if the mutator can mutate element, or false
+     */
+    public boolean canMutate(CtElement element) {
+        // The element should in the source file (i.e., not synthetic)
+        return element.getPosition().isValidPosition();
+    }
 
     public abstract void mutate(CtElement element);
 }

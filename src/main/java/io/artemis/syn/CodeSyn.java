@@ -20,6 +20,7 @@ import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtImport;
 import spoon.reflect.declaration.CtMethod;
@@ -28,6 +29,7 @@ import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtScanner;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 /**
@@ -40,6 +42,8 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * TODO What if the declarations (when newing something) throw RuntimeExceptions?
  */
 public class CodeSyn {
+
+    private static final String SYNTHETIC_CODE_KEY = "AX_SYNTHETIC";
 
     private final Artemis mAx;
     private final AxRandom mRand;
@@ -129,6 +133,21 @@ public class CodeSyn {
      */
     public CtExpression<?> synExpr(CtTypeReference<?> type) {
         return mNewIns.newInstance(mAx.getSpoon().getFactory(), type);
+    }
+
+    public static <T extends CtElement> T markSynthetic(T stmt) {
+        CtScanner markScanner = new CtScanner() {
+            @Override
+            protected void enter(CtElement e) {
+                e.putMetadata(SYNTHETIC_CODE_KEY, true);
+            }
+        };
+        markScanner.scan(stmt);
+        return stmt;
+    }
+
+    public static boolean isMarkedSynthetic(CtElement ele) {
+        return ele.getMetadata(SYNTHETIC_CODE_KEY) != null;
     }
 
     private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, List<CtImport> typesToImport,

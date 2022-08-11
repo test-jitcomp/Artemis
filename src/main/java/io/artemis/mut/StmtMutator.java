@@ -13,7 +13,7 @@ public abstract class StmtMutator extends Mutator {
 
     @Override
     public final boolean canMutate(CtElement element) {
-        if (!(element instanceof CtStatement)) {
+        if (!super.canMutate(element) || !(element instanceof CtStatement)) {
             return false;
         }
         CtStatement stmt = (CtStatement) element;

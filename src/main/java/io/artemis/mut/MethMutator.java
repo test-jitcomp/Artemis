@@ -12,14 +12,11 @@ public abstract class MethMutator extends Mutator {
 
     @Override
     public final boolean canMutate(CtElement element) {
-        if (!(element instanceof CtMethod)) {
+        if (!super.canMutate(element) || !(element instanceof CtMethod)) {
             return false;
         }
         CtMethod<?> meth = (CtMethod<?>) element;
-        if (meth.isAbstract()) {
-            return false;
-        }
-        return canMutate(meth);
+        return !meth.isAbstract() && canMutate(meth);
     }
 
     @Override
