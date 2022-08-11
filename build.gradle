@@ -21,6 +21,38 @@ jar {
     }
 }
 
+// Creating an zip archive including only the artemis
+// jar binary and the testing scripts inside scripts
+task archiveArtemis(type: Zip) {
+    dependsOn shadowJar
+
+    description = "Archive Artemis' binary and scripts"
+
+    // Use default file name and destination directory
+    // archiveFileName = "artemis-${project.version}.zip"
+    // destinationDirectory = buildDir
+
+    exclude '**/.idea'
+
+    from("$project.rootDir") {
+        include 'LICENSE'
+        include 'README.md'
+    }
+
+    from("$buildDir/libs") {
+        //noinspection GroovyAssignabilityCheck
+        include shadowJar.archiveFileName.get()
+    }
+
+    from('artemi') {
+        include 'java_fuzzer/**'
+        include 'jfuzz/**'
+        include 'requirements.txt'
+        include 'runner.py', 'jvm.py', 'utils.py'
+        include 'artemi.py', 'artemi.yaml'
+    }
+}
+
 dependencies {
     implementation 'fr.inria.gforge.spoon:spoon-core:10.1.1'
     // Add the following to resolve "Failed to load class org.slf4j.impl.StaticLoggerBinder"

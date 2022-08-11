@@ -1,0 +1,64 @@
+out_dir: <required-to-change>        # Abs path to the output directory of this script, e.g., /tmp/artemi
+num_proc: 4                          # Number of process to use
+prog_timeout: 60                     # Timeout (seconds) for each run of the generated .java file
+rand_seed: 1                         # Random seed to artemi
+num_mutation: 8                      # Number of mutations for each .java file
+save_timeouts: False                 # Whether to save tests that are timed out
+
+java:
+  home: <required-to-change>         # Abs path to Java home, e.g., $JAVA_HOME or /usr/lib/jvm/java-8-openjdk-amd64
+  classpath: [ ]                     # List of string, default classpath (should be abs path) to command javac and java
+
+jvm:
+  type: target-art                   # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
+  options: [ ]                       # List of string, the default JVM running options
+  #
+  # Type 'target-art'- and 'host-art'-shared configs
+  #
+  min_api: 28                        # Minimum android API level compatability, should be >=1
+  #
+  # Type 'target-art'-only configs
+  #
+  android_home: <required-to-change> # Abs path to the Android SDK directory, e.g., $ANDROID_HOME or /home/whom/Android/Sdk
+  serial_no: <required-to-change>    # Serial no of the emulator/device to use, e.g., emulator-5554
+  build_tools: <required-to-change>  # Version of Android SDK build tools to use, e.g., 29.0.0
+  app_process: false                 # Use app_process instead of dalvikvm on device
+  #
+  # Type 'host-art'-only configs
+  #
+  host_home: <required-to-change>    # Abs path to AOSP's $ANDROID_BUILD_TOP/out directory or Artemis self build art. See build_art.md.
+  #
+  # Type 'hotspot'-, 'openj9'-, and 'graal'-shared configs
+  #
+  java_home: <required-to-change>    # Abs path to the home of HotSpot, OpenJ9, or Graal
+  classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
+
+generator:
+  name: Java*Fuzzer                  # One of 'Java*Fuzzer', 'JFuzz', 'ExistingTests'
+  #
+  # Shared configs
+  #
+  out_dir: <required-to-change>      # Abs path to the output directory of Java*Fuzzer, e.g., /tmp/artemi/jaf
+  #
+  # Java*Fuzzer-only configs
+  #
+  conf: None                         # Either "none"/"None" or abs path to the config yml file of Java*Fuzzer, see java_fuzzer/config.yml
+  #
+  # JFuzz-only configs
+  #
+  max_stmt_list_size: 10             # Max number of statement in a statement list
+  max_nested_branch: 5               # Max number of nested if/switch statements
+  max_nested_loop: 3                 # Max number of nested do/for/while statements
+  max_nested_try_catch: 2            # Max number of nested try-catch statements
+  #
+  # ExistingTests-only configs
+  #
+  exist_dir: <required-to-change>    # Abs path to the existing directory saving existing tests
+
+artemis:
+  jar: <required-to-change>          # Abs path to Artemis's jar file, e.g., /tmp/artemi/artemis.jar
+  code_bricks: <required-to-change>  # Abs path to the code brick directory
+  policy: artemis                    # Mutation policy of Artemis, one of: ['artemis']
+  min_loop_trip: 32                  # Minimum loop trip, see "-m" option of Artemis
+  max_loop_trip: 256                 # Maximum loop trip, see "-M" option of Artemis
+  extra_opts: { }                    # Extra options, see "-X" option of Artemis

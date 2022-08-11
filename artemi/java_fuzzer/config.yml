@@ -1,0 +1,134 @@
+# Copyright (C) 2016 Intel Corporation
+# Modifications copyright (C) 2017-2018 Azul Systems
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Java* Fuzzer for Android* Configuration File
+# with modifications for Java* Fuzzer test generator
+
+# general:
+mode:  "default"  # the mode of the generator: either 'defaut' or 'MM_extreme' (memory management)
+max_size:    400  # max length of arrays and loops; should not be less than 10
+min_size_fraction: 0.3 # minimal fraction of max_size to be guaranteed (other fraction is random(max_size-min_size_fraction*max_size) )
+max_nested_size: 25000  #  max total number of iterations of nested loops
+max_nested_size_not_mainTest: 1500 #  max total number of iterations of nested loops in methods called from mainTest
+max_stmts:    30  # generated statements max count
+#max_nlen:      3  # max length of a random name
+max_arr_dim:   2  # array max dimension
+width:       120  # width of resulting text
+max_shift:   110  # max indentation of a text line
+p_big_array: 5   # probability of big array creation
+min_big_array: 22276 # 12kB for byte type, 24kB for short and char, 48kB for int and float, 96kB for double
+max_big_array: 1000 # a random size to add to a big array
+outer_control: false # Ability to setup a random seed for Java code
+outer_control_prob: 3 # 1 - 100% invocations, 2 - 50% invocations, 3 - 33% invocations, etc.
+
+# methods:
+max_meths:     5     # max count of methods (excluding main and mainTest) in a class
+max_args:      3      # max count of a method arguments
+max_classes:   2
+max_threads:   0
+p_constructor: 30     # probability of a non-trivial constructor
+max_callers_chain: 3 # Maximum chain of methods calling each other (including constructors)
+p_non_static_method: 25
+mainTest_calls_num: 10 # number of mainTest method calls, should be adjusted with CompileThreshold
+time_sleep_complete_tier1: 0 # time in milliseconds to sleep after mainTest_calls_num invocations of mainTest to make sure Tier1 compilation is done; 0 if no sleep needed
+mainTest_calls_num_tier2: 0 # number of mainTest method calls after sleep, should be adjusted with CompileThreshold (Tier2); 0 if no need to call mainTest again
+
+
+# expressions:
+# MAX_NUM = 100
+# MAX_NUM = 0x80000000  # max int + 1
+max_num:       0x10000  # 16-bit int + 1 - max int literal
+max_exp_depth: 3        # max depth of expression recursion
+p_null_literal: 30      # probability of null literal
+
+# statements:
+max_if_stmts:    4     # max count of statements in if part of if statement
+max_el_stmts:    4     # max count of statements in else part of if statement
+max_try_stmts:   6     # max count of statements in try
+max_loop_stmts: 10     # max count of statements in a loop
+max_loop_depth:  3     # max depth of nested loops
+start_frac:     16     # fraction of the max value of induction var for initial value
+min_small_meth_calls: 100 # minimal number of small method calls
+max_small_meth_calls: 1000 # maximal number of small method calls
+
+# expression probabilities:
+#p_stat_field:     5   # probability of static field as a var
+p_invoc_expr:     50   # probability of method invocation in expression
+p_inl_invoc_expr: 2   # probability of inlinable method invocation in expression
+
+# variables
+p_volatile:     15     # variability for a variable to be volatile
+
+var_types: {non_static: 3, static: 3, static_other: 0, local: 10, local_other: 0, block: 1}
+
+types: {Array: 1, Object: 0, boolean: 1, String: 0, byte: 1, char: 0, short: 1, 
+        int: 18, long: 6, float: 3, double: 2}
+
+exp_kind: {literal: 2, scalar: 8, array: 2, field: 0, oper: 32,
+           assign: 0, cond: 0, inlinvoc: 0, invoc: 5, libinvoc: 3}
+
+op_cats: {relational: 2, boolean: 1, integral: 2, arith: 30,
+          uarith: 3, indecrem_pre: 6, indecrem_post: 6, boolean_assn: 1,
+          integral_assn: 1, arith_assn: 2, object_assn: 0, array_assn: 1}
+
+ind_kinds: {"-1": 12, "0": 18, "+1": 12, any: 1}
+
+operators: {
+    relational:    {'==': 1, '!=': 3, '<':  1, '<=': 1, '>':  1, '>=':  1},
+    boolean:       {'==': 1, '!=': 1, '&':  1, '|':  1, '^':  1, '&&':  3, '||': 3, '!': 2},
+    integral:      {'&':  1, '|':  1, '^':  1, '<<': 2, '>>': 2, '>>>': 1, '~':  1},
+    arith:         {'+': 18, '-': 18, '*': 12, '/':  1, '%':  1},
+    uarith:        {'-':  1},
+    indecrem_pre:  {'++': 1, '--': 1},
+    indecrem_post: {'++': 1, '--': 1},
+    boolean_assn:  {'=':  1},
+    integral_assn: {'=':  8, '&=':  1, '|=':  1, '^=':  1, '<<=': 3, '>>=': 3, '>>>=': 1},
+    arith_assn:    {'=': 27, '+=': 18, '-=': 18, '*=': 12, '/=':  1, '%=':  1},
+    object_assn: {'=': 1},
+    array_assn: {'=': 1}
+}
+
+# statement probabilities:
+p_empty_seq:      1    # probability of empty sequence of statements
+p_else:          60    # probability of Else in If statement
+p_triang:        20    # probability of induction var in For initial value expr
+p_meth_reuse:    50    # probability of re-using known meth in an invocation
+p_return:        10    # probability of return statement
+p_var_reuse:     98    # probability of reusing existing var or arr
+p_big_switch:     1    # probability of big switch
+p_packed_switch: 60    # probability of packed switch
+
+for_step: {-3: 1, -2: 1, -1: 4, 1: 32, 2: 1, 3: 1}
+p_ind_var_type: {'int': 20, 'long': 1, 'float': 1, 'double': 1} # induction var types
+
+statements: {
+    ForLoopStmt:     [48,         24,         1.5 ],
+    WhileDoStmt:     [16,          8,         1.5 ],
+    EnhancedForStmt: [ 4,          2,         1.5 ],
+    ContinueStmt:    [ 0,          1,           1 ],
+    BreakStmt:       [ 0,          1,           1 ],
+    IfStmt:          [ 3,          4,         1.5 ],
+    SwitchStmt:      [ 2,          3,           1 ],
+    AssignmentStmt:  [ 80,         40,           1 ],
+    IntDivStmt:      [ 0,          1,           1 ],
+    ReturnStmt:      [ 0,          1,           1 ],
+    TryStmt:         [ 1,          1,           2 ],
+    ExcStmt:         [ 1,          1,           2 ],
+    VectStmt:        [ 0,          8,           1 ],
+    InvocationStmt:  [ 50,         40,           2 ],
+    CondInvocStmt:   [ 0,          0,           2 ],
+    SmallMethStmt:   [ 10,         5,           2 ],
+    NewThreadStmt:   [ 40,         1,           2 ]
+}

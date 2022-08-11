@@ -1,0 +1,39 @@
+out_dir: <required-to-change>        # Abs path to the output directory of this script, e.g., /tmp/artemi
+prog_timeout: 60                     # Timeout (seconds) for each run of the generated .java file
+rand_seed: 1                         # Random seed to artemi
+num_mutation: 8                      # Number of mutations for each .java file
+stop_limit: 10                       # Stop testing if generated this number of .java files
+
+java:
+  home: <required-to-change>         # Abs path to Java home, e.g., $JAVA_HOME or /usr/lib/jvm/java-8-openjdk-amd64
+  classpath: [ ]                     # List of string, default classpath (should be abs path) to command javac and java
+
+generator:
+  name: Java*Fuzzer                  # One of 'Java*Fuzzer', 'JFuzz', 'ExistingTests'
+  #
+  # Shared configs
+  #
+  out_dir: <required-to-change>      # Abs path to the output directory of Java*Fuzzer, e.g., /tmp/artemi/jaf
+  #
+  # Java*Fuzzer-only configs
+  #
+  conf: None                         # Either "none"/"None" or abs path to the config yml file of Java*Fuzzer, see java_fuzzer/config.yml
+  #
+  # JFuzz-only configs
+  #
+  max_stmt_list_size: 10             # Max number of statement in a statement list
+  max_nested_branch: 5               # Max number of nested if/switch statements
+  max_nested_loop: 3                 # Max number of nested do/for/while statements
+  max_nested_try_catch: 2            # Max number of nested try-catch statements
+  #
+  # ExistingTests-only configs
+  #
+  exist_dir: <required-to-change>    # Abs path to the existing directory saving existing tests
+
+artemis:
+  jar: <required-to-change>          # Abs path to Artemis's jar file, e.g., /tmp/artemi/artemis.jar
+  code_bricks: <required-to-change>  # Abs path to the code brick directory, "-B" option of Artemis
+  policy: artemis                    # Mutation policy of Artemis, one of: ['artemis'], "-p" option of Artemis
+  min_loop_trip: 32                  # Minimum loop trip, "-m" option of Artemis
+  max_loop_trip: 256                 # Maximum loop trip, "-M" option of Artemis
+  extra_opts: { }                    # Extra options, "-X" option of Artemis
