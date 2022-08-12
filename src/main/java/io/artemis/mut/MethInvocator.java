@@ -98,8 +98,10 @@ public class MethInvocator extends MethMutator {
                 (out, ignoreUnused) -> out.println(loop));
         MiLoopSkl.enableCtrl(loop, ctrl, fact);
         MiLoopSkl.disableCtrl(loop, ctrl, fact);
-        List<CtExpression<?>> args =
-                invoc.getArguments().stream().map(CtExpression::clone).collect(Collectors.toList());
+        // Let's synthesize an argument list for it
+        // TODO Reuse existing variables and initializers
+        List<CtExpression<?>> args = invoc.getArguments().stream()
+                .map(e -> syn.synExpr(e.getType())).collect(Collectors.toList());
         MiLoopSkl.invocMeth(loop, invoc, args, fact);
         // Insert the loop right before the invocation statement
         Spoons.insertBeforeStmt(invoc, loop);

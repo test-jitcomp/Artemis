@@ -22,7 +22,7 @@ import spoon.support.compiler.VirtualFolder;
 public class Artemis {
     // @formatter:off
     public static final String ARTEMIS_USAGE = 
-            "Usage: artemis [options] -b BRICKS -i INPUT -o OUTPUT_DIR\n"
+            "Usage: artemis [options] -b BRICKS -i INPUT -o OUTPUT\n"
             + "\n" 
             + "Arguments:\n" 
             + "  -b BRICKS      path to the directory saving code bricks\n"

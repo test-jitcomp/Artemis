@@ -1,7 +1,7 @@
 package io.artemis.pol;
 
 import io.artemis.Artemis;
-import io.artemis.util.NotImplementedException;
+import io.artemis.util.CannotReachHereException;
 
 public class PolicyFactory {
 
@@ -20,7 +20,7 @@ public class PolicyFactory {
             case ARTEMIS:
                 return new ArtemisPolicy(ax, opts);
             default:
-                throw new NotImplementedException("create");
+                throw new CannotReachHereException("Unsupported policy with name: " + which.name);
         }
     }
 }

@@ -180,6 +180,8 @@ public class CodeSyn {
             cb.unsafeGetImports().forEach(e -> typesToImport.add(e.clone()));
         }
 
+        // Instantiate the loop skeleton with above names and blocks
+        // TODO Reuse existing variables and initializers on start/step/trip
         Spoons.flat(skl.instantiate(mAx, /* start= */ -mRand.nextInt(mAx.getMinLoopTrips()),
                 /* step= */ mRand.nextInt(1, 2),
                 /* trip= */ mRand.nextInt(mAx.getMinLoopTrips(), mAx.getMaxLoopTrips()),
