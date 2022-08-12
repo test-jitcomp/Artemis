@@ -22,6 +22,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     @Override
     protected CtExpression<?> kaseArray(CtArrayTypeReferenceImpl<?> type) {
         CtNewArray<?> newArray = mFact.createNewArray();
+        // TODO Remove generics to avoid generic array creation
+        newArray.setType((CtTypeReference) type.clone());
         int dimenCount = type.getDimensionCount();
         if (dimenCount == 1) {
             // Don't be too large, otherwise it may occupy too much memory.
@@ -59,7 +61,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseByte(CtTypeReferenceImpl<?> type) {
-        return mFact.createLiteral((byte) AxRandom.getInstance().nextInt());
+        return mFact.createLiteral((byte) AxRandom.getInstance().nextInt())
+                .addTypeCast(mFact.createCtTypeReference(byte.class));
     }
 
     @Override
@@ -69,7 +72,8 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseShort(CtTypeReferenceImpl<?> type) {
-        return mFact.createLiteral((short) AxRandom.getInstance().nextInt());
+        return mFact.createLiteral((short) AxRandom.getInstance().nextInt())
+                .addTypeCast(mFact.createCtTypeReference(short.class));
     }
 
     @Override
@@ -129,7 +133,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseString(CtTypeReferenceImpl<?> type) {
-        return mFact.createLiteral("1");
+        return mFact.createLiteral("s");
     }
 
     @Override
