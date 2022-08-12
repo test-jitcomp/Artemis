@@ -21,6 +21,7 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtTry;
 import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtImport;
@@ -305,12 +306,23 @@ public class CodeSyn {
                 /* tryBlock= */ blk);
 
         // Redirect stdout and stderr to avoid unexpected outputs and recover afterwards
-        // TODO Optimize output redirection, maybe put a reference as the class field
-        blk = RedirectSkl.instantiate(mAx, /* outBkName= */ AxNames.getInstance().nextName(),
-                /* errBkName= */ AxNames.getInstance().nextName(),
-                /* newName= */ AxNames.getInstance().nextName(), blk);
+        CtClass<?> rhClass = ensureRhSynOnce();
+        blk.insertBegin(RedirectSkl.callRedirect(mAx, rhClass));
+        blk.insertEnd(RedirectSkl.callRecover(mAx, rhClass));
 
         // Let's peel every statement from the block and return parent-uninitialized ones
         return Spoons.flat(blk);
+    }
+
+    private CtClass<?> ensureRhSynOnce() {
+        CtClass<?> rhClass = mAx.getSpoon().getFactory().Class().get("AxOutputRedirectionHelper");
+        if (rhClass == null) {
+            rhClass = RedirectSkl.instantiate(mAx, "AxOutputRedirectionHelper");
+            rhClass.addModifier(ModifierKind.PRIVATE);
+            rhClass.addModifier(ModifierKind.STATIC);
+            rhClass.addModifier(ModifierKind.FINAL);
+            mAx.getTestClass().addNestedType(rhClass);
+        }
+        return rhClass;
     }
 }

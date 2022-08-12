@@ -31,7 +31,7 @@ public class Artemis {
             + "\n" 
             + "Options:\n"
             + "  -m MIN_TRIPS   minimum loop trips (default: 50,000)\n"
-            + "  -M MAX_TRIPS   minimum loop trips (default: 100,000,000)\n"
+            + "  -M MAX_TRIPS   maximum loop trips (default: 100,000,000)\n"
             + "  -s SEED        random seed (default: current time in ms)\n"
             + "  -p POLICY      mutation policy, one of: artemis (default: artemis)\n"
             + "  -Xkey:value    extra options, currently no available options\n"

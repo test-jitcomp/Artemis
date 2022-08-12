@@ -5,58 +5,58 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 
 import io.artemis.Artemis;
-import spoon.reflect.code.CtBlock;
-import spoon.template.BlockTemplate;
+import spoon.reflect.code.CtStatement;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.factory.Factory;
+import spoon.template.ExtensionTemplate;
 import spoon.template.Local;
-import spoon.template.Parameter;
+import spoon.template.Substitution;
 
-public class RedirectSkl extends BlockTemplate {
+public class RedirectSkl extends ExtensionTemplate {
     ///////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////// SKELETON DEFINITIONS //////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
-    // Values to substitute
-    @Parameter
-    private CtBlock<?> _BLOCK_;
+    private static final PrintStream devNull = new PrintStream(new OutputStream() {
+        @Override
+        public void write(int i) throws IOException {
+            /* DO NOTHING */
+        }
+    });
+    private static final PrintStream stdOutBk = System.out;
+    private static final PrintStream stdErrBk = System.err;
 
-    // Names to substitute
-    @Parameter
-    private String _OUT_BK_NAME_;
-    @Parameter
-    private String _ERR_BK_NAME_;
-    @Parameter
-    private String _NEW_NAME_;
+    public static void redirect() {
+        System.setOut(devNull);
+        System.setErr(devNull);
+    }
 
-    @Override
-    public void block() throws Throwable {
-        final PrintStream _OUT_BK_NAME_ = System.out;
-        final PrintStream _ERR_BK_NAME_ = System.err;
-        PrintStream _NEW_NAME_ = new PrintStream(new OutputStream() {
-            @Override
-            public void write(int i) throws IOException {
-                // DISCARD EVERYTHING
-            }
-        });
-        System.setOut(_NEW_NAME_);
-        System.setErr(_NEW_NAME_);
-        _BLOCK_.S();
-        System.setOut(_OUT_BK_NAME_);
-        System.setErr(_ERR_BK_NAME_);
+    public static void recover() {
+        System.setOut(stdOutBk);
+        System.setErr(stdErrBk);
     }
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////
 
     @Local
-    public static CtBlock<?> instantiate(Artemis ax, String outBkName, String errBkName,
-            String newName, CtBlock<?> block) {
-        RedirectSkl skl = new RedirectSkl();
+    public static CtClass<?> instantiate(Artemis ax, String className) {
+        CtClass<?> rhClass = ax.getSpoon().getFactory().createClass(className);
+        Substitution.insertAll(rhClass, new RedirectSkl());
+        return rhClass;
+    }
 
-        skl._OUT_BK_NAME_ = outBkName;
-        skl._ERR_BK_NAME_ = errBkName;
-        skl._NEW_NAME_ = newName;
-        skl._BLOCK_ = block;
+    @Local
+    public static CtStatement callRedirect(Artemis ax, CtClass<?> rhClass) {
+        Factory fact = ax.getSpoon().getFactory();
+        return fact.createInvocation(fact.createTypeAccess(rhClass.getReference()),
+                rhClass.getMethod("redirect").getReference());
+    }
 
-        return skl.apply(ax.getTestClass());
+    @Local
+    public static CtStatement callRecover(Artemis ax, CtClass<?> rhClass) {
+        Factory fact = ax.getSpoon().getFactory();
+        return fact.createInvocation(fact.createTypeAccess(rhClass.getReference()),
+                rhClass.getMethod("recover").getReference());
     }
 
     @Local
