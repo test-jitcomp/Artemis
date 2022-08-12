@@ -19,6 +19,7 @@ import spoon.reflect.code.CtBlock;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
+import spoon.reflect.code.CtTry;
 import spoon.reflect.code.CtVariableAccess;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
@@ -38,8 +39,6 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * so-called code brick: class CodeBrick), synthesizing a declaration for each input of the brick,
  * and finally connecting the brick with a loop header. To ensure neutral, it captures all potential
  * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to null.
- * 
- * TODO What if the declarations (when newing something) throw RuntimeExceptions?
  */
 public class CodeSyn {
 
@@ -80,11 +79,19 @@ public class CodeSyn {
         // Create restores for our reused variables
         List<CtStatement> restoreList = synRestores(reusedList, backupList);
 
-        // Out final loop should be ``backups; mainLoop; restores;``
+        // Our final loop should be ``backups; try { mainLoop; } finally { restores; }``
         CtBlock<?> finLoop = fact.createBlock();
         backupList.forEach(finLoop::addStatement);
-        Spoons.flat(mainLoop).forEach(finLoop::addStatement);
-        restoreList.forEach(finLoop::addStatement);
+        {
+            CtTry loopRestore = fact.createTry();
+            loopRestore.setBody(mainLoop);
+
+            CtBlock<?> finalizer = fact.createBlock();
+            restoreList.forEach(finalizer::addStatement);
+            loopRestore.setFinalizer(finalizer);
+
+            finLoop.addStatement(loopRestore);
+        }
 
         return finLoop;
     }
