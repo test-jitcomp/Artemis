@@ -4,9 +4,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import io.artemis.AxChecker;
 import io.artemis.AxNames;
@@ -43,8 +47,10 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 /* package */ class CbManager {
 
     private static final String MANIFEST_NAME = "MANIFEST";
+    private static final String MANIFEST_LINE_COMMENT = "#";
     private static final String MANIFEST_LINE_CB_INITZ_PREFIX = "InitzCount=";
     private static final String MANIFEST_LINE_CB_PREFIX = "CbCount=";
+    private static final String MANIFEST_LINE_CB_BL_PREFIX = "CbBlacklist=";
     private static final String CB_INITZ_CLASS_NAME_PREFIX = "InitzCls";
     private static final String INITZ_CLASS_NAME_STRING = CB_INITZ_CLASS_NAME_PREFIX + "String";
     private static final String INITZ_CLASS_NAME_ARRAY = CB_INITZ_CLASS_NAME_PREFIX + "Array";
@@ -63,6 +69,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     // Code bricks: lazy load
     private final CbLazyLoader mCbLoader;
     private final Map<Integer, CodeBrick> mCodeBricks;
+    private final List<Integer> mCbBlist;
     private final File mCbFolder;
     private int mCbCount;
 
@@ -84,6 +91,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     public CbManager(File cbFolder) {
         mCbLoader = new CbLazyLoader();
         mCodeBricks = new HashMap<>();
+        mCbBlist = new ArrayList<>();
         mCbFolder = cbFolder;
         mCbCount = -1;
         mInitzLoader = new InitzLazyLoader();
@@ -102,7 +110,7 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
     }
 
     public void init() throws IOException {
-        // Read manifest to learn the number of initializer and templates
+        // Parse manifest to learn the stats of initializer and templates
         File mani = new File(mCbFolder, MANIFEST_NAME);
         BufferedReader reader = new BufferedReader(new FileReader(mani));
         String newLine;
@@ -112,6 +120,13 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
                         Integer.parseInt(newLine.substring(MANIFEST_LINE_CB_INITZ_PREFIX.length()));
             } else if (newLine.startsWith(MANIFEST_LINE_CB_PREFIX)) {
                 mCbCount = Integer.parseInt(newLine.substring(MANIFEST_LINE_CB_PREFIX.length()));
+            } else if (newLine.startsWith(MANIFEST_LINE_CB_BL_PREFIX)) {
+                mCbBlist.addAll(Arrays
+                        .stream(newLine.substring(MANIFEST_LINE_CB_BL_PREFIX.length()).split(","))
+                        .map(Integer::parseInt).collect(Collectors.toList()));
+            } else {
+                AxChecker.check(newLine.startsWith(MANIFEST_LINE_COMMENT),
+                        "Unrecognized MANIFEST line: " + newLine);
             }
         }
     }
@@ -124,6 +139,12 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         return mInitzCount;
     }
 
+    /**
+     * Iterate over all existing initializers of the given type
+     * 
+     * @param type Type of initializers to iterate
+     * @param con A consumer to consume an initializer
+     */
     public void forEachInitz(CtTypeReference<?> type, Consumer<CtExpression<?>> con) {
         CtClass<?> initzCls = mInitzLoader.ensureLoaded(type);
         if (initzCls == mInitzClsArray || initzCls == mInitzClsRef) {
@@ -137,9 +158,18 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
     }
 
+    /**
+     * Get the brick of at the given index, or null if the brick is blacked
+     * 
+     * @param index Index of the code brick
+     * @return The code brick at index, or null if blacked
+     */
     public CodeBrick getCodeBrick(int index) {
         AxChecker.check(0 <= index && index < mCbCount,
                 "Code brick with index " + index + " does not exist");
+        if (mCbBlist.contains(index)) {
+            return null;
+        }
         mCbLoader.ensureLoaded(index);
         return mCodeBricks.get(index);
     }

@@ -40,6 +40,8 @@ import spoon.reflect.visitor.filter.TypeFilter;
  * so-called code brick: class CodeBrick), synthesizing a declaration for each input of the brick,
  * and finally connecting the brick with a loop header. To ensure neutral, it captures all potential
  * exceptions likely to be thrown by the brick and redirect the output (stdout, stderr) to null.
+ * 
+ * TODO What if the declarations throw any explicit or even implicit RuntimeExceptions?
  */
 public class CodeSyn {
 
@@ -108,7 +110,7 @@ public class CodeSyn {
         CtBlock<?> seg = mAx.getSpoon().getFactory().createBlock();
 
         // Choose a random code brick to instantiate
-        CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
+        CodeBrick cb = ensureGetCodeBrick();
         AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
             out.println(cb);
         });
@@ -172,7 +174,7 @@ public class CodeSyn {
         CtBlock<?>[] blocks = new CtBlock[skl.getBlockCount()];
         for (int i = 0; i < blocks.length; i++) {
             // Choose a random code brick to instantiate
-            CodeBrick cb = mCbManager.getCodeBrick(mRand.nextInt(mCbManager.getCbCount()));
+            CodeBrick cb = ensureGetCodeBrick();
             AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
                 out.println(cb);
             });
@@ -324,5 +326,14 @@ public class CodeSyn {
             mAx.getTestClass().addNestedType(rhClass);
         }
         return rhClass;
+    }
+
+    private CodeBrick ensureGetCodeBrick() {
+        int cbCount = mCbManager.getCbCount();
+        CodeBrick brick = null;
+        while (brick == null) {
+            brick = mCbManager.getCodeBrick(mRand.nextInt(cbCount));
+        }
+        return brick;
     }
 }
