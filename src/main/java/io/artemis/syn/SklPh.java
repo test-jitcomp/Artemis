@@ -8,13 +8,11 @@ import spoon.reflect.code.CtInvocation;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.visitor.filter.TypeFilter;
-import spoon.template.Local;
 
-public class SklPh {
+public final class SklPh {
 
     public static void placeholder(String id) {}
 
-    @Local
     public static void substitute(CtStatement from, String id, CtStatement to) {
         try {
             from.getElements(new TypeFilter<>(CtInvocation.class) {

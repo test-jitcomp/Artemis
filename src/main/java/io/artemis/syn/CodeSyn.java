@@ -51,6 +51,7 @@ public class CodeSyn {
     private final AxRandom mRand;
     private final CbManager mCbManager;
     private final NewInstance mNewIns;
+    private final Set<Integer> mUsedCb;
 
     public CodeSyn(Artemis ax, File cbFolder) throws IOException {
         mAx = ax;
@@ -58,6 +59,7 @@ public class CodeSyn {
         mCbManager = new CbManager(cbFolder);
         mCbManager.init();
         mNewIns = new NewInstance();
+        mUsedCb = new HashSet<>();
     }
 
     /**
@@ -110,7 +112,7 @@ public class CodeSyn {
         CtBlock<?> seg = mAx.getSpoon().getFactory().createBlock();
 
         // Choose a random code brick to instantiate
-        CodeBrick cb = ensureGetCodeBrick();
+        CodeBrick cb = ensureGetUnusedCb();
         AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
             out.println(cb);
         });
@@ -174,7 +176,7 @@ public class CodeSyn {
         CtBlock<?>[] blocks = new CtBlock[skl.getBlockCount()];
         for (int i = 0; i < blocks.length; i++) {
             // Choose a random code brick to instantiate
-            CodeBrick cb = ensureGetCodeBrick();
+            CodeBrick cb = ensureGetUnusedCb();
             AxLog.v("Using CodeBrick#" + cb.getId(), (out, ignoreUnused) -> {
                 out.println(cb);
             });
@@ -328,12 +330,13 @@ public class CodeSyn {
         return rhClass;
     }
 
-    private CodeBrick ensureGetCodeBrick() {
+    private CodeBrick ensureGetUnusedCb() {
         int cbCount = mCbManager.getCbCount();
         CodeBrick brick = null;
-        while (brick == null) {
+        while (brick == null || mUsedCb.contains(brick.getId())) {
             brick = mCbManager.getCodeBrick(mRand.nextInt(cbCount));
         }
+        mUsedCb.add(brick.getId());
         return brick;
     }
 }

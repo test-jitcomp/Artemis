@@ -102,7 +102,7 @@ public class MethInvocator extends MethMutator {
         // TODO Reuse existing variables and initializers
         List<CtExpression<?>> args = meth.getParameters().stream()
                 .map(p -> syn.synExpr(p.getType())).collect(Collectors.toList());
-        MiLoopSkl.invocMeth(loop, invoc, args, fact);
+        MiLoopSkl.invokeMeth(loop, invoc, args, fact);
         // Insert the loop right before the invocation statement
         Spoons.insertBeforeStmt(invoc, loop);
 

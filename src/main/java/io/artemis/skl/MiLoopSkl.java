@@ -45,7 +45,7 @@ public class MiLoopSkl extends BlockTemplate implements LoopSkl {
                 _STEP_.S()) {
             _PRE_BODY_.S();
             SklPh.placeholder("<enable_ctrl>");
-            SklPh.placeholder("<invoc_meth>");
+            SklPh.placeholder("<invoke_meth>");
             SklPh.placeholder("<disable_ctrl>");
             _POST_BODY_.S();
         }
@@ -98,9 +98,9 @@ public class MiLoopSkl extends BlockTemplate implements LoopSkl {
     }
 
     @Local
-    public static void invocMeth(CtStatement loop, CtInvocation<?> invoc,
+    public static void invokeMeth(CtStatement loop, CtInvocation<?> invoc,
             List<CtExpression<?>> args, Factory fact) {
-        SklPh.substitute(loop, "<invoc_meth>", fact.createInvocation(invoc.getTarget().clone(),
+        SklPh.substitute(loop, "<invoke_meth>", fact.createInvocation(invoc.getTarget().clone(),
                 invoc.getExecutable().clone(), args));
     }
 }
