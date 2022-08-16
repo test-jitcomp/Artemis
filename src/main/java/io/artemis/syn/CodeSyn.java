@@ -322,7 +322,7 @@ public class CodeSyn {
         CtClass<?> rhClass = mAx.getSpoon().getFactory().Class().get("AxOutputRedirectionHelper");
         if (rhClass == null) {
             rhClass = RedirectSkl.instantiate(mAx, "AxOutputRedirectionHelper");
-            rhClass.addModifier(ModifierKind.PRIVATE);
+            rhClass.addModifier(ModifierKind.PUBLIC);
             rhClass.addModifier(ModifierKind.STATIC);
             rhClass.addModifier(ModifierKind.FINAL);
             mAx.getTestClass().addNestedType(rhClass);

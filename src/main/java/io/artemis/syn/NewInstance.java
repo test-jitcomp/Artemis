@@ -2,6 +2,7 @@ package io.artemis.syn;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 import io.artemis.AxRandom;
 import io.artemis.util.CannotReachHereException;
@@ -9,6 +10,7 @@ import io.artemis.util.Spoons;
 import spoon.reflect.code.CtExpression;
 import spoon.reflect.code.CtNewArray;
 import spoon.reflect.factory.Factory;
+import spoon.reflect.reference.CtArrayTypeReference;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
 import spoon.support.reflect.reference.CtTypeReferenceImpl;
@@ -21,22 +23,27 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
     @Override
     protected CtExpression<?> kaseArray(CtArrayTypeReferenceImpl<?> type) {
-        CtNewArray<?> newArray = mFact.createNewArray();
-        // TODO Remove generics to avoid generic array creation
-        newArray.setType((CtTypeReference) type.clone());
+        CtNewArray<?> array = mFact.createNewArray();
+        CtArrayTypeReference<?> arrayType = type.clone();
+        CtTypeReference<?> arrayFinestType = arrayType.getArrayType();
+        // Remove generics (aka type arguments) to avoid generic array creation
+        if (!arrayFinestType.getActualTypeArguments().isEmpty()) {
+            arrayFinestType.setActualTypeArguments(new ArrayList<>());
+        }
+        array.setType((CtTypeReference) arrayType);
         int dimenCount = type.getDimensionCount();
         if (dimenCount == 1) {
             // Don't be too large, otherwise it may occupy too much memory.
             int size = AxRandom.getInstance().nextInt(1, 10);
             for (int i = 0; i < size; i++) {
-                newArray.addElement(svitch(type.getComponentType()));
+                array.addElement(svitch(type.getComponentType()));
             }
         } else {
             for (int i = 0; i < type.getDimensionCount(); i++) {
-                newArray.addElement(svitch(type.getComponentType()));
+                array.addElement(svitch(type.getComponentType()));
             }
         }
-        return newArray;
+        return array;
     }
 
     @Override
