@@ -131,6 +131,11 @@ import spoon.support.reflect.reference.CtTypeReferenceImpl;
         }
     }
 
+    public boolean isCodeBrick(File file) {
+        File parent = file.getParentFile();
+        return parent != null && parent.equals(mCbFolder);
+    }
+
     public int getCbCount() {
         return mCbCount;
     }

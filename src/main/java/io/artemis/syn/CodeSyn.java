@@ -21,6 +21,7 @@ import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.code.CtStatement;
 import spoon.reflect.code.CtTry;
 import spoon.reflect.code.CtVariableAccess;
+import spoon.reflect.cu.SourcePosition;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
@@ -31,7 +32,6 @@ import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.reflect.factory.Factory;
 import spoon.reflect.reference.CtTypeReference;
-import spoon.reflect.visitor.CtScanner;
 import spoon.reflect.visitor.filter.TypeFilter;
 
 /**
@@ -60,6 +60,17 @@ public class CodeSyn {
         mCbManager.init();
         mNewIns = new NewInstance();
         mUsedCb = new HashSet<>();
+    }
+
+    /**
+     * Return whether the given element is synthetic or not
+     * 
+     * @param ele Element to test
+     * @return True if the given element is synthetic; or false.
+     */
+    public boolean isSyn(CtElement ele) {
+        SourcePosition pos = ele.getPosition();
+        return !pos.isValidPosition() || mCbManager.isCodeBrick(pos.getFile());
     }
 
     /**
@@ -145,21 +156,6 @@ public class CodeSyn {
      */
     public CtExpression<?> synExpr(CtTypeReference<?> type) {
         return mNewIns.newInstance(mAx.getSpoon().getFactory(), type);
-    }
-
-    public static <T extends CtElement> T markSynthetic(T stmt) {
-        CtScanner markScanner = new CtScanner() {
-            @Override
-            protected void enter(CtElement e) {
-                e.putMetadata(SYNTHETIC_CODE_KEY, true);
-            }
-        };
-        markScanner.scan(stmt);
-        return stmt;
-    }
-
-    public static boolean isMarkedSynthetic(CtElement ele) {
-        return ele.getMetadata(SYNTHETIC_CODE_KEY) != null;
     }
 
     private CtBlock<?> synMainLoop(PPoint pp, LoopSkl skl, List<CtImport> typesToImport,

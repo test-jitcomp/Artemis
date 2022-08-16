@@ -22,8 +22,8 @@ public abstract class Mutator {
      * @return Return true if the mutator can mutate element, or false
      */
     public boolean canMutate(CtElement element) {
-        // The element should in the source file (i.e., not synthetic)
-        return element.getPosition().isValidPosition();
+        // The element should not be synthetic
+        return !mAx.getCodeSyn().isSyn(element);
     }
 
     public abstract void mutate(CtElement element);

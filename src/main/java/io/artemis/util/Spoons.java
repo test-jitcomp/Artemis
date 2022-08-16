@@ -21,6 +21,7 @@ import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 import spoon.reflect.declaration.CtVariable;
 import spoon.reflect.reference.CtTypeReference;
+import spoon.reflect.visitor.CtScanner;
 import spoon.support.reflect.reference.CtArrayTypeReferenceImpl;
 import spoon.support.reflect.reference.CtTypeReferenceImpl;
 
@@ -128,6 +129,11 @@ public class Spoons {
         return meth.getDeclaringType().getQualifiedName() + "::" + meth.getSimpleName() + "()";
     }
 
+    public static CtCompilationUnit getCompUnit(CtElement e) {
+        AxChecker.check(e.getPosition().isValidPosition(), "Invalid position: " + e);
+        return e.getPosition().getCompilationUnit();
+    }
+
     public static List<CtStatement> flat(CtStatement blk) {
         if (blk instanceof CtStatementList) {
             List<CtStatement> blkStmts = new ArrayList<>(((CtStatementList) blk).getStatements());
@@ -187,6 +193,21 @@ public class Spoons {
         } catch (RefactoringException e) {
             AxLog.w(e.getMessage());
         }
+    }
+
+    public static <T extends CtElement> T mark(T ele, String key) {
+        CtScanner markScanner = new CtScanner() {
+            @Override
+            protected void enter(CtElement e) {
+                e.putMetadata(key, true);
+            }
+        };
+        markScanner.scan(ele);
+        return ele;
+    }
+
+    public static boolean isMarked(CtElement ele, String key) {
+        return ele.getMetadata(key) != null;
     }
 
     public static boolean isVoidType(CtTypeReference<?> type) {
