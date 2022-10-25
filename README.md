@@ -19,13 +19,13 @@ A JIT compiler bug is a bug that otherwise *won't* manifest if the JIT compiler 
 
 ## Installation
 
-Download Artemis from the [Releases](releases) page and unzip to a directory say `/tmp/artemis`:
+Download Artemis from the [Releases](#) page and unzip to a directory say `/tmp/artemis`:
 
 ```
 $ unzip artemis-<version>.zip -d /tmp/artemis
 ```
 
-Download Code Bricks from [Releases](releases) page and unzip to a directory say `/tmp/artemis/cbs`.
+Download Code Bricks from [Releases](#) page and unzip to a directory say `/tmp/artemis/cbs`.
 
 ```
 $ unzip code-bricks.zip -d /tmp/artemis/cbs
@@ -79,7 +79,7 @@ $ java -jar Artemis-<version>.jar -h
 
 ## Contributions
 
-1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter) file.
+1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
 2. For bugs/issues/questions/feature requests please file an issue. 
 
 
