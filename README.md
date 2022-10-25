@@ -89,7 +89,7 @@ $ pip install -r requirements.txt
 Besides the artemi framework, Artemis itself can be used as a seperate program mutator. It takes as input a Java source file, and outputs a Java source file with mutations specifically designed to test JIT compilers. See required arguments and available options by `-h`.
 
 ```
-$ java -jar Artemis-<version>.jar -h
+$ java -jar artemis.jar -h
 ```
 
 

@@ -34,7 +34,7 @@ jvm:
   # These options are for 'hotspot', 'openj9', and 'graal'
   # Leave them untouched if you're testing other JVMs
   #
-  java_home: /tmp/artemis/hs-jdk17   # Abs path to the home of HotSpot, OpenJ9, or Graal
+  java_home: /home/artemis/hs-jdk17  # Abs path to the home of the JVM you'd like to test
   classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
 
 generator:
@@ -63,6 +63,6 @@ artemis:
   jar: /tmp/artemis/artemis.jar      # Abs path to Artemis's jar file, e.g., /tmp/artemi/artemis.jar
   code_bricks: /tmp/artemis/cbs      # Abs path to the code brick directory
   policy: artemis                    # Mutation policy of Artemis, one of: ['artemis']
-  min_loop_trip: 32                  # Minimum loop trip, see "-m" option of Artemis
-  max_loop_trip: 256                 # Maximum loop trip, see "-M" option of Artemis
+  min_loop_trip: 10000               # Minimum loop trip, see "-m" option of Artemis
+  max_loop_trip: 20000               # Maximum loop trip, see "-M" option of Artemis
   extra_opts: { }                    # Extra options, see "-X" option of Artemis

@@ -10,7 +10,7 @@ java:
   classpath: [ ]                     # List of string, default classpath (should be abs path) to command javac and java
 
 jvm:
-  type: target-art                   # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
+  type: hotspot                      # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
   options: [ ]                       # List of string, the default JVM running options
   #
   # These options are for 'target-art'- and 'host-art'
@@ -34,7 +34,7 @@ jvm:
   # These options are for 'hotspot', 'openj9', and 'graal'
   # Leave them untouched if you're testing other JVMs
   #
-  java_home: <required-to-change>    # Abs path to the home of HotSpot, OpenJ9, or Graal
+  java_home: <required-to-change>    # Abs path to the home of the JVM you'd like to test
   classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
 
 generator:
