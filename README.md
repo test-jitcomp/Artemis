@@ -1,4 +1,21 @@
-<!-- TODO: Add Logo -->
+<!-- TODO Add logo, make public, and release the draft -->
+<!-- <p align="center"><a><img width="160" alt="logo" align="center" src=".github/logo.png"></a></p>
+<br>
+<p align="center">
+    <a href="https://github.com/test-jitcomp/Artemis/actions" alt="Build status">
+        <img src="https://img.shields.io/github/workflow/status/test-jitcomp/Artemis/Build%20and%20archive%20check" />
+    </a>
+    <a href="https://semver.org" alt="Version">
+        <img src="https://img.shields.io/github/v/release/test-jitcomp/Artemis" />
+    </a>
+    <a href="https://google.github.io/styleguide/javaguide.html" alt="Code style">
+        <img src="https://img.shields.io/badge/style-Google-blue" />
+    </a>
+    <a href="https://opensource.org/licenses/MIT" alt="License">
+        <img src="https://img.shields.io/github/license/test-jitcomp/Artemis" />
+    </a>
+</p>
+ -->
 
 
 
@@ -19,13 +36,13 @@ A JIT compiler bug is a bug that otherwise *won't* manifest if the JIT compiler 
 
 ## Installation
 
-Download Artemis from the [Releases](#) page and unzip to a directory say `/tmp/artemis`:
+Download Artemis from the [Releases](https://github.com/test-jitcomp/Artemis/releases) page and unzip to a directory say `/tmp/artemis`:
 
 ```
 $ unzip artemis-<version>.zip -d /tmp/artemis
 ```
 
-Download Code Bricks from [Releases](#) page and unzip to a directory say `/tmp/artemis/cbs`.
+Download Code Bricks from [Releases](https://github.com/test-jitcomp/Artemis/releases) page and unzip to a directory say `/tmp/artemis/cbs`.
 
 ```
 $ unzip code-bricks.zip -d /tmp/artemis/cbs
@@ -77,7 +94,7 @@ $ java -jar Artemis-<version>.jar -h
 
 
 
-## Contributions
+## Contributing
 
 1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
 2. For bugs/issues/questions/feature requests please file an issue. 
