@@ -1,4 +1,4 @@
-out_dir: <required-to-change>        # Abs path to the output directory of this script, e.g., /tmp/artemi
+out_dir: /tmp/artemis/out            # Abs path to the output directory of this script, e.g., /tmp/artemi
 num_proc: 4                          # Number of process to use
 prog_timeout: 60                     # Timeout (seconds) for each run of the generated .java file
 rand_seed: 1                         # Random seed to artemi
@@ -6,11 +6,11 @@ num_mutation: 8                      # Number of mutations for each .java file g
 save_timeouts: False                 # Whether to save tests that are timed out
 
 java:
-  home: <required-to-change>         # Abs path to Java home, e.g., $JAVA_HOME or /usr/lib/jvm/java-8-openjdk-amd64
+  home: $JAVA_HOME                   # Abs path to Java home, e.g., $JAVA_HOME or /usr/lib/jvm/java-8-openjdk-amd64
   classpath: [ ]                     # List of string, default classpath (should be abs path) to command javac and java
 
 jvm:
-  type: target-art                   # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
+  type: hotspot                      # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
   options: [ ]                       # List of string, the default JVM running options
   #
   # These options are for 'target-art'- and 'host-art'
@@ -34,12 +34,12 @@ jvm:
   # These options are for 'hotspot', 'openj9', and 'graal'
   # Leave them untouched if you're testing other JVMs
   #
-  java_home: <required-to-change>    # Abs path to the home of HotSpot, OpenJ9, or Graal
+  java_home: /tmp/artemis/hs-jdk17   # Abs path to the home of HotSpot, OpenJ9, or Graal
   classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
 
 generator:
   name: Java*Fuzzer                  # One of 'Java*Fuzzer', 'JFuzz', 'ExistingTests'
-  out_dir: <required-to-change>      # Abs path to the output directory of Java*Fuzzer, e.g., /tmp/artemi/jaf
+  out_dir: /tmp/artemis/jaf          # Abs path to the output directory of Java*Fuzzer, e.g., /tmp/artemi/jaf
   #
   # These options are for 'Java*Fuzzer'
   # Leave them untouched if you're using other generators
@@ -60,8 +60,8 @@ generator:
   exist_dir: <required-to-change>    # Abs path to the existing directory saving existing tests
 
 artemis:
-  jar: <required-to-change>          # Abs path to Artemis's jar file, e.g., /tmp/artemi/artemis.jar
-  code_bricks: <required-to-change>  # Abs path to the code brick directory
+  jar: /tmp/artemis/artemis.jar      # Abs path to Artemis's jar file, e.g., /tmp/artemi/artemis.jar
+  code_bricks: /tmp/artemis/cbs      # Abs path to the code brick directory
   policy: artemis                    # Mutation policy of Artemis, one of: ['artemis']
   min_loop_trip: 32                  # Minimum loop trip, see "-m" option of Artemis
   max_loop_trip: 256                 # Maximum loop trip, see "-M" option of Artemis

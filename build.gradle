@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'io.artemis'
-version '0.1-SNAPSHOT'
+version '0.1'
 
 repositories {
     mavenCentral()
@@ -21,16 +21,13 @@ jar {
     }
 }
 
-// Creating an zip archive including only the artemis
+// Creating a zip archive including only the artemis
 // jar binary and the testing scripts inside scripts
 task archiveArtemis(type: Zip) {
     dependsOn shadowJar
 
-    description = "Archive Artemis' binary and scripts"
-
-    // Use default file name and destination directory
-    // archiveFileName = "artemis-${project.version}.zip"
-    // destinationDirectory = buildDir
+    description = "Archive Artemis and the artemi framework"
+    archiveFileName = "artemis-${project.version}.zip"
 
     exclude '**/.idea'
 
@@ -42,6 +39,7 @@ task archiveArtemis(type: Zip) {
     from("$buildDir/libs") {
         //noinspection GroovyAssignabilityCheck
         include shadowJar.archiveFileName.get()
+        rename shadowJar.archiveFileName.get(), "artemis.jar"
     }
 
     from('artemi') {
@@ -49,7 +47,7 @@ task archiveArtemis(type: Zip) {
         include 'jfuzz/**'
         include 'requirements.txt'
         include 'runner.py', 'jvm.py', 'utils.py'
-        include 'artemi.py', 'artemi.yaml'
+        include 'artemi.py', 'artemi.yaml', 'artemi.ex.yaml'
     }
 }
 
