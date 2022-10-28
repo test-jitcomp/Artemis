@@ -1,7 +1,11 @@
 <!-- TODO Add logo, make public, and release the draft -->
-<!-- <p align="center"><a><img width="160" alt="logo" align="center" src=".github/logo.png"></a></p>
-<br>
+
 <p align="center">
+    <!-- <img width="160" alt="logo" align="center" src=".github/logo.png"> -->
+    <h1 align="center">Artemis</h1>
+</p>
+
+<!-- <p align="center">
     <a href="https://github.com/test-jitcomp/Artemis/actions" alt="Build status">
         <img src="https://img.shields.io/github/workflow/status/test-jitcomp/Artemis/Build%20and%20archive%20check" />
     </a>
@@ -19,10 +23,8 @@
 
 
 
-# Artemis
-
-A Java program mutator specifically designed to test JVM's JIT compilers.
-Artemis also provides a fuzzing framework called [artemi](./artemi) to stress-test JVM's JIT compilers.
+Artemis is a Java program mutator specifically designed to test JVM's JIT compilers.
+It also provides a fuzzing framework called [artemi](./artemi) to stress-test JVM's JIT compilers.
 Given a set of seed Java programs, Artemis generates a set of mutants for testing.
 Artemis has already found **60+** JVM's JIT compiler bugs in three widely-used production JVMs:
 [HotSpot](https://github.com/openjdk),
@@ -64,7 +66,10 @@ $ pip install -r requirements.txt
 1. **Edit artemi.yaml**. See [`artemi.ex.yaml`](./artemi/artemi.ex.yaml) for an example.
     + Do fill every option marked as `<required-to-change>` with correct value. But for the `jvm` and `generator` option, only fill those related despite marked as `<required-to-change>`.
     + Do fill with *absolute* paths for each path option, instead of relative paths.
-    + The framework supports to test HotSpot, OpenJ9, Graal, and ART at present. Supporting other JVMs is on the way. For this option, do *build the JVM with the version you'd like to test* manually by yourself. For example, follow [this thread](https://github.com/openjdk/jdk17u-dev/blob/master/doc/building.md) to build HotSpot with JDK17 and [this thread](https://github.com/eclipse-openj9/openj9/blob/master/doc/build-instructions/Build_Instructions_V17.md) for OpenJ9 with JDK17.
+    + The framework supports to test HotSpot, OpenJ9, Graal, and ART at present. Supporting other JVMs is on the way. For this option, do *download (or build by yourself) the specific-version JVM you'd like to test and points `*_home` sub-option to the home directory of it*. To build by yourself, follow these threads:
+        - [HotSpot: Building the JDK (17)](https://github.com/openjdk/jdk17u-dev/blob/master/doc/building.md)
+        - [OpenJ9: Building OpenJDK Version 17  with OpenJ9](https://github.com/eclipse-openj9/openj9/blob/master/doc/build-instructions/Build_Instructions_V17.md)
+        - [ART: Building Android](https://source.android.com/docs/setup/build/building); for this, use `m build-art-host` or `m build-art-target` in the last step to build quickly.
     + The framework supports to use `Java*Fuzzer` and `JFuzz` as the program generator at present. Supporting other program generators is on the way.
     + The framework has no other command line arguments and options except those listed in `artemi.yaml`.
 

@@ -13,10 +13,21 @@ jvm:
   type: hotspot                      # One of: 'target-art', 'host-art', 'hotspot', 'openj9', 'graal'
   options: [ ]                       # List of string, the default JVM running options
   #
+  # These options are for 'hotspot', 'openj9', and 'graal'
+  # Leave them untouched if you're testing other JVMs
+  #
+  java_home: <required-to-change>    # Abs path to the home of the JVM you'd like to test
+  classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
+  #
   # These options are for 'target-art'- and 'host-art'
   # Leave them untouched if you're testing other JVMs
   #
-  min_api: 28                        # Minimum android API level compatability, should be >=1
+  min_api: 28                        # Minimum android API level compatability, should be >=1  #
+  #
+  # These options are for 'host-art'
+  # Leave them untouched if you're testing other JVMs
+  #
+  host_home: <required-to-change>    # Abs path to AOSP's $ANDROID_BUILD_TOP/out directory
   #
   # These options are for 'target-art'
   # Leave them untouched if you're testing other JVMs
@@ -25,17 +36,6 @@ jvm:
   serial_no: <required-to-change>    # Serial no of the emulator/device to use, e.g., emulator-5554
   build_tools: <required-to-change>  # Version of Android SDK build tools to use, e.g., 29.0.0
   app_process: false                 # Use app_process instead of dalvikvm on device
-  #
-  # These options are for 'host-art'
-  # Leave them untouched if you're testing other JVMs
-  #
-  host_home: <required-to-change>    # Abs path to AOSP's $ANDROID_BUILD_TOP/out directory or Artemis self build art. See build_art.md.
-  #
-  # These options are for 'hotspot', 'openj9', and 'graal'
-  # Leave them untouched if you're testing other JVMs
-  #
-  java_home: <required-to-change>    # Abs path to the home of the JVM you'd like to test
-  classpath: [ ]                     # List of string, default classpath (should be abs path) to JVM
 
 generator:
   name: Java*Fuzzer                  # One of 'Java*Fuzzer', 'JFuzz', 'ExistingTests'
