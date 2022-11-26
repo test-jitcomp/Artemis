@@ -1,8 +1,7 @@
 <!-- TODO Add logo, make public, and release the draft -->
 
 <p align="center">
-    <!-- <img width="160" alt="logo" align="center" src=".github/logo.png"> -->
-    <h1 align="center">Artemis</h1>
+    <img width="160" alt="logo" align="center" src=".github/artemis.png">
 </p>
 
 <!-- <p align="center">
