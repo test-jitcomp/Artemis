@@ -98,6 +98,91 @@ $ java -jar artemis.jar -h
 
 
 
+# Bug-showcases
+
+### HotSpot
+
++ [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, Inlining
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P2, Ideal Graph Building
++ [JDK-8288734](https://bugs.openjdk.org/browse/JDK-8288734): P4, Ideal Graph Building
++ [JDK-8290781](https://bugs.openjdk.org/browse/JDK-8290781): P3, Ideal Loop Optimization
++ [JDK-8292766](https://bugs.openjdk.org/browse/JDK-8292766): P4, Ideal Loop Optimization
++ [JDK-8294217](https://bugs.openjdk.org/browse/JDK-8294217): P4, Ideal Loop Optimization
++ [JDK-8294433](https://bugs.openjdk.org/browse/JDK-8294433): P4, Ideal Loop Optimization
++ [JDK-8294413](https://bugs.openjdk.org/browse/JDK-8294413): P4, Ideal Loop Optimization
++ [JDK-8290778](https://bugs.openjdk.org/browse/JDK-8290778): P2, Ideal Loop Optimization
++ [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, Ideal Loop Optimization
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, Ideal Loop Optimization
++ [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, Ideal Loop Optimization
++ [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, Global Constant Propagation
++ [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, Global Value Numbering
++ [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, Global Value Numbering
++ [JDK-8287217](https://bugs.openjdk.org/browse/JDK-8287217): P4, Global Value Numbering
++ [JDK-8293996](https://bugs.openjdk.org/browse/JDK-8293996): P4, Global Value Numbering
++ [JDK-8288204](https://bugs.openjdk.org/browse/JDK-8288204): P3, Global Value Numbering
++ [JDK-8288392](https://bugs.openjdk.org/browse/JDK-8288392): P4, Escape Analysis
++ [JDK-8288559](https://bugs.openjdk.org/browse/JDK-8288559): P4, Register Allocation 
++ [JDK-8290862](https://bugs.openjdk.org/browse/JDK-8290862): P4, Register Allocation
++ [JDK-8290776](https://bugs.openjdk.org/browse/JDK-8290776): P3, Code Generation
++ [JDK-8288560](https://bugs.openjdk.org/browse/JDK-8288560): P4, Code Generation
++ [JDK-8289043](https://bugs.openjdk.org/browse/JDK-8289043): P3, Code Generation
++ [JDK-8288190](https://bugs.openjdk.org/browse/JDK-8288190): P2, Code Execution
++ [JDK-8290789](https://bugs.openjdk.org/browse/JDK-8290789): P3, Code Execution
++ [JDK-8290864](https://bugs.openjdk.org/browse/JDK-8290864): P4, Code Execution
++ [JDK-8288975](https://bugs.openjdk.org/browse/JDK-8288975): P3, mis-compilation, Global Code Motion
++ [JDK-8290360](https://bugs.openjdk.org/browse/JDK-8290360): P3, Performance
+
+### OpenJ9
+
++ [15332](https://github.com/eclipse-openj9/openj9/issues/15332): Local Value Propagation
++ [15311](https://github.com/eclipse-openj9/openj9/issues/15311): Global Value Propagation
++ [15364](https://github.com/eclipse-openj9/openj9/issues/15364): Global Value Propagation
++ [15335](https://github.com/eclipse-openj9/openj9/issues/15335): Loop Vectorization
++ [15474](https://github.com/eclipse-openj9/openj9/issues/15474): Deoptimization
++ [15305](https://github.com/eclipse-openj9/openj9/issues/15305): Register Allocation
++ [15363](https://github.com/eclipse-openj9/openj9/issues/15363): Code Generation
++ [15599](https://github.com/eclipse-openj9/openj9/issues/15599): Code Generation
++ [15338](https://github.com/eclipse-openj9/openj9/issues/15338): Recompilation
++ [15477](https://github.com/eclipse-openj9/openj9/issues/15477): Code Execution
++ [15475](https://github.com/eclipse-openj9/openj9/issues/15475): Code Execution
++ [15569](https://github.com/eclipse-openj9/openj9/issues/15569): Code Execution
++ [15476](https://github.com/eclipse-openj9/openj9/issues/15476): Garbage Collection
++ [15592](https://github.com/eclipse-openj9/openj9/issues/15592): Garbage Collection
++ [15575](https://github.com/eclipse-openj9/openj9/issues/15575): Garbage Collection
++ [15534](https://github.com/eclipse-openj9/openj9/issues/15534): miscompilation
++ [15369](https://github.com/eclipse-openj9/openj9/issues/15369): miscompilation
++ [15306.1](https://github.com/eclipse-openj9/openj9/issues/15306#issue-1269628433): miscompilation
++ [15306.3](https://github.com/eclipse-openj9/openj9/issues/15306#issuecomment-1196676217): miscompilation
++ [15874](https://github.com/eclipse-openj9/openj9/issues/15874): miscompilation
++ [15347.1](https://github.com/eclipse-openj9/openj9/issues/15347#issue-1273630629): miscompilation
++ [15347.2](https://github.com/eclipse-openj9/openj9/issues/15347#issuecomment-1157737495): miscompilation
++ [15349](https://github.com/eclipse-openj9/openj9/issues/15349): miscompilation
+
+### ART
+
++ [229134124](https://issuetracker.google.com/issues/229134124): P3, -,
++ [230079540](https://issuetracker.google.com/issues/230079540): P2, -,
++ [227427222](https://issuetracker.google.com/issues/227427222): P3, -,
++ [226413323](https://issuetracker.google.com/issues/226413323): P3, -,
++ [227365247](https://issuetracker.google.com/issues/227365247): P3, Loop Optimization,
++ [230079537](https://issuetracker.google.com/issues/230079537): P2, -,
++ [230079539](https://issuetracker.google.com/issues/230079539): P2, -,
++ [229184394](https://issuetracker.google.com/issues/229184394): P3, -,
++ [227382489](https://issuetracker.google.com/issues/227382489): P3, miscompilation, Code Generation
++ [227365246](https://issuetracker.google.com/issues/227365246): P3, miscompilation, Code Generation
++ [229134126](https://issuetracker.google.com/issues/229134126): P3, miscompilation
++ [230635320](https://issuetracker.google.com/issues/230635320): P2, miscompilation
++ [230635319](https://issuetracker.google.com/issues/230635319): P2, miscompilation
++ [230631558](https://issuetracker.google.com/issues/230631558): P3, miscompilation
++ [230635329](https://issuetracker.google.com/issues/230635329): P3, miscompilation
++ [232742203](https://issuetracker.google.com/issues/232742203): P3, miscompilation
+
+### Graal
+
++ [4801](https://github.com/oracle/graal/issues/4801)
+
+
+
 ## Contributing
 
 1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
