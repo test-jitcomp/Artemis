@@ -102,35 +102,35 @@ $ java -jar artemis.jar -h
 
 ### HotSpot
 
-+ [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, Inlining
-+ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P2, Ideal Graph Building
-+ [JDK-8288734](https://bugs.openjdk.org/browse/JDK-8288734): P4, Ideal Graph Building
-+ [JDK-8290781](https://bugs.openjdk.org/browse/JDK-8290781): P3, Ideal Loop Optimization
-+ [JDK-8292766](https://bugs.openjdk.org/browse/JDK-8292766): P4, Ideal Loop Optimization
-+ [JDK-8294217](https://bugs.openjdk.org/browse/JDK-8294217): P4, Ideal Loop Optimization
-+ [JDK-8294433](https://bugs.openjdk.org/browse/JDK-8294433): P4, Ideal Loop Optimization
-+ [JDK-8294413](https://bugs.openjdk.org/browse/JDK-8294413): P4, Ideal Loop Optimization
-+ [JDK-8290778](https://bugs.openjdk.org/browse/JDK-8290778): P2, Ideal Loop Optimization
-+ [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, Ideal Loop Optimization
-+ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, Ideal Loop Optimization
-+ [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, Ideal Loop Optimization
-+ [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, Global Constant Propagation
-+ [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, Global Value Numbering
-+ [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, Global Value Numbering
-+ [JDK-8287217](https://bugs.openjdk.org/browse/JDK-8287217): P4, Global Value Numbering
-+ [JDK-8293996](https://bugs.openjdk.org/browse/JDK-8293996): P4, Global Value Numbering
-+ [JDK-8288204](https://bugs.openjdk.org/browse/JDK-8288204): P3, Global Value Numbering
-+ [JDK-8288392](https://bugs.openjdk.org/browse/JDK-8288392): P4, Escape Analysis
-+ [JDK-8288559](https://bugs.openjdk.org/browse/JDK-8288559): P4, Register Allocation 
-+ [JDK-8290862](https://bugs.openjdk.org/browse/JDK-8290862): P4, Register Allocation
-+ [JDK-8290776](https://bugs.openjdk.org/browse/JDK-8290776): P3, Code Generation
-+ [JDK-8288560](https://bugs.openjdk.org/browse/JDK-8288560): P4, Code Generation
-+ [JDK-8289043](https://bugs.openjdk.org/browse/JDK-8289043): P3, Code Generation
-+ [JDK-8288190](https://bugs.openjdk.org/browse/JDK-8288190): P2, Code Execution
-+ [JDK-8290789](https://bugs.openjdk.org/browse/JDK-8290789): P3, Code Execution
-+ [JDK-8290864](https://bugs.openjdk.org/browse/JDK-8290864): P4, Code Execution
-+ [JDK-8288975](https://bugs.openjdk.org/browse/JDK-8288975): P3, mis-compilation, Global Code Motion
-+ [JDK-8290360](https://bugs.openjdk.org/browse/JDK-8290360): P3, Performance
++ [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, C1, Inlining
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P2, C2, Ideal Graph Building
++ [JDK-8288734](https://bugs.openjdk.org/browse/JDK-8288734): P4, C2, Ideal Graph Building
++ [JDK-8290781](https://bugs.openjdk.org/browse/JDK-8290781): P3, C2, Ideal Loop Optimization
++ [JDK-8292766](https://bugs.openjdk.org/browse/JDK-8292766): P4, C2, Ideal Loop Optimization
++ [JDK-8294217](https://bugs.openjdk.org/browse/JDK-8294217): P4, C2, Ideal Loop Optimization
++ [JDK-8294433](https://bugs.openjdk.org/browse/JDK-8294433): P4, C2, Ideal Loop Optimization
++ [JDK-8294413](https://bugs.openjdk.org/browse/JDK-8294413): P4, C2, Ideal Loop Optimization
++ [JDK-8290778](https://bugs.openjdk.org/browse/JDK-8290778): P2, C2, Ideal Loop Optimization
++ [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, C2, Ideal Loop Optimization
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, C2, Ideal Loop Optimization
++ [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, C2, Ideal Loop Optimization
++ [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, C2, Global Constant Propagation
++ [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, C2, Global Value Numbering
++ [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, C2, Global Value Numbering
++ [JDK-8287217](https://bugs.openjdk.org/browse/JDK-8287217): P4, C2, Global Value Numbering
++ [JDK-8293996](https://bugs.openjdk.org/browse/JDK-8293996): P4, C2, Global Value Numbering
++ [JDK-8288204](https://bugs.openjdk.org/browse/JDK-8288204): P3, C2, Global Value Numbering
++ [JDK-8288392](https://bugs.openjdk.org/browse/JDK-8288392): P4, C2, Escape Analysis
++ [JDK-8288559](https://bugs.openjdk.org/browse/JDK-8288559): P4, C2, Register Allocation
++ [JDK-8290862](https://bugs.openjdk.org/browse/JDK-8290862): P4, C2, Register Allocation
++ [JDK-8290776](https://bugs.openjdk.org/browse/JDK-8290776): P3, C2, Code Generation
++ [JDK-8288560](https://bugs.openjdk.org/browse/JDK-8288560): P4, C2, Code Generation
++ [JDK-8289043](https://bugs.openjdk.org/browse/JDK-8289043): P3, C2, Code Generation
++ [JDK-8288190](https://bugs.openjdk.org/browse/JDK-8288190): P2, C2, Code Execution
++ [JDK-8290789](https://bugs.openjdk.org/browse/JDK-8290789): P3, C2, Code Execution
++ [JDK-8290864](https://bugs.openjdk.org/browse/JDK-8290864): P4, C2, Code Execution
++ [JDK-8288975](https://bugs.openjdk.org/browse/JDK-8288975): P3, C2, mis-compilation, Global Code Motion
++ [JDK-8290360](https://bugs.openjdk.org/browse/JDK-8290360): P3, C2, Performance
 
 ### OpenJ9
 
