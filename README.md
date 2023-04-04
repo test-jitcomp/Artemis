@@ -100,86 +100,98 @@ $ java -jar artemis.jar -h
 
 ## Bug-showcases
 
+Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SIGSEGV), fatal arithmetic error (SIGFPE), emergency abort (SIGABRT), assertion failures, mis-compilations, to performance issues. These bugs affects quite a lot VM compoments. We list some of them here. More to come.
+
+
 ### HotSpot
 
-+ [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, C1, Inlining
-+ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P2, C2, Ideal Graph Building
-+ [JDK-8288734](https://bugs.openjdk.org/browse/JDK-8288734): P4, C2, Ideal Graph Building
-+ [JDK-8290781](https://bugs.openjdk.org/browse/JDK-8290781): P3, C2, Ideal Loop Optimization
-+ [JDK-8292766](https://bugs.openjdk.org/browse/JDK-8292766): P4, C2, Ideal Loop Optimization
-+ [JDK-8294217](https://bugs.openjdk.org/browse/JDK-8294217): P4, C2, Ideal Loop Optimization
-+ [JDK-8294433](https://bugs.openjdk.org/browse/JDK-8294433): P4, C2, Ideal Loop Optimization
-+ [JDK-8294413](https://bugs.openjdk.org/browse/JDK-8294413): P4, C2, Ideal Loop Optimization
-+ [JDK-8290778](https://bugs.openjdk.org/browse/JDK-8290778): P2, C2, Ideal Loop Optimization
-+ [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, C2, Ideal Loop Optimization
-+ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, C2, Ideal Loop Optimization
-+ [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, C2, Ideal Loop Optimization
-+ [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, C2, Global Constant Propagation
-+ [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, C2, Global Value Numbering
-+ [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, C2, Global Value Numbering
-+ [JDK-8287217](https://bugs.openjdk.org/browse/JDK-8287217): P4, C2, Global Value Numbering
-+ [JDK-8293996](https://bugs.openjdk.org/browse/JDK-8293996): P4, C2, Global Value Numbering
-+ [JDK-8288204](https://bugs.openjdk.org/browse/JDK-8288204): P3, C2, Global Value Numbering
-+ [JDK-8288392](https://bugs.openjdk.org/browse/JDK-8288392): P4, C2, Escape Analysis
-+ [JDK-8288559](https://bugs.openjdk.org/browse/JDK-8288559): P4, C2, Register Allocation
-+ [JDK-8290862](https://bugs.openjdk.org/browse/JDK-8290862): P4, C2, Register Allocation
-+ [JDK-8290776](https://bugs.openjdk.org/browse/JDK-8290776): P3, C2, Code Generation
-+ [JDK-8288560](https://bugs.openjdk.org/browse/JDK-8288560): P4, C2, Code Generation
-+ [JDK-8289043](https://bugs.openjdk.org/browse/JDK-8289043): P3, C2, Code Generation
-+ [JDK-8288190](https://bugs.openjdk.org/browse/JDK-8288190): P2, C2, Code Execution
-+ [JDK-8290789](https://bugs.openjdk.org/browse/JDK-8290789): P3, C2, Code Execution
-+ [JDK-8290864](https://bugs.openjdk.org/browse/JDK-8290864): P4, C2, Code Execution
-+ [JDK-8288975](https://bugs.openjdk.org/browse/JDK-8288975): P3, C2, mis-compilation, Global Code Motion
-+ [JDK-8290360](https://bugs.openjdk.org/browse/JDK-8290360): P3, C2, Performance
++ [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, C1, Assertion Failure, Inlining
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P2, C2, Assertion Failure, Ideal Graph Building
++ [JDK-8288734](https://bugs.openjdk.org/browse/JDK-8288734): P4, C2, Assertion Failure, Ideal Graph Building
++ [JDK-8305429](https://bugs.openjdk.org/browse/JDK-8305429): P4, C2, Assertion Failure, Ideal Graph Building
++ [JDK-8290781](https://bugs.openjdk.org/browse/JDK-8290781): P3, C2, Segmentation Fault, Ideal Loop Optimization
++ [JDK-8292766](https://bugs.openjdk.org/browse/JDK-8292766): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8294217](https://bugs.openjdk.org/browse/JDK-8294217): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8294433](https://bugs.openjdk.org/browse/JDK-8294433): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8294413](https://bugs.openjdk.org/browse/JDK-8294413): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8290778](https://bugs.openjdk.org/browse/JDK-8290778): P2, C2, Segmentation Fault, Ideal Loop Optimization
++ [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-XXXXXXX](https://bugs.openjdk.org/browse/JDK-XXXXXXX): Px, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, C2, Assertion Failure, Global Constant Propagation
++ [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, C2, Assertion Failure, Global Value Numbering
++ [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, C2, Assertion Failure, Global Value Numbering
++ [JDK-8287217](https://bugs.openjdk.org/browse/JDK-8287217): P4, C2, Assertion Failure, Global Value Numbering
++ [JDK-8293996](https://bugs.openjdk.org/browse/JDK-8293996): P4, C2, Assertion Failure, Global Value Numbering
++ [JDK-8288204](https://bugs.openjdk.org/browse/JDK-8288204): P3, C2, Assertion Failure, Global Value Numbering
++ [JDK-8288392](https://bugs.openjdk.org/browse/JDK-8288392): P4, C2, Assertion Failure, Escape Analysis
++ [JDK-8288559](https://bugs.openjdk.org/browse/JDK-8288559): P4, C2, Assertion Failure, Register Allocation
++ [JDK-8290862](https://bugs.openjdk.org/browse/JDK-8290862): P4, C2, Segmentation Fault, Register Allocation
++ [JDK-8290776](https://bugs.openjdk.org/browse/JDK-8290776): P3, C2, Segmentation Fault, Code Generation
++ [JDK-8288560](https://bugs.openjdk.org/browse/JDK-8288560): P4, C2, Assertion Failure, Code Generation
++ [JDK-8289043](https://bugs.openjdk.org/browse/JDK-8289043): P3, C2, Assertion Failure, Code Generation
++ [JDK-8305428](https://bugs.openjdk.org/browse/JDK-8305428): P4, C2, Assertion Failure, Code Generation
++ [JDK-8288190](https://bugs.openjdk.org/browse/JDK-8288190): P2, C2, Segmentation Fault, Code Execution
++ [JDK-8290789](https://bugs.openjdk.org/browse/JDK-8290789): P3, C2, Segmentation Fault, Code Execution
++ [JDK-8290864](https://bugs.openjdk.org/browse/JDK-8290864): P4, C2, Segmentation Fault, Code Execution
++ [JDK-8288975](https://bugs.openjdk.org/browse/JDK-8288975): P3, C2, Mis-compilation, Global Code Motion
++ [JDK-8290360](https://bugs.openjdk.org/browse/JDK-8290360): P3, C2, Performance Issue
 
 ### OpenJ9
 
-+ [15332](https://github.com/eclipse-openj9/openj9/issues/15332): Local Value Propagation
-+ [15311](https://github.com/eclipse-openj9/openj9/issues/15311): Global Value Propagation
-+ [15364](https://github.com/eclipse-openj9/openj9/issues/15364): Global Value Propagation
-+ [15335](https://github.com/eclipse-openj9/openj9/issues/15335): Loop Vectorization
-+ [15474](https://github.com/eclipse-openj9/openj9/issues/15474): Deoptimization
-+ [15305](https://github.com/eclipse-openj9/openj9/issues/15305): Register Allocation
-+ [15363](https://github.com/eclipse-openj9/openj9/issues/15363): Code Generation
-+ [15599](https://github.com/eclipse-openj9/openj9/issues/15599): Code Generation
-+ [15338](https://github.com/eclipse-openj9/openj9/issues/15338): Recompilation
-+ [15477](https://github.com/eclipse-openj9/openj9/issues/15477): Code Execution
-+ [15475](https://github.com/eclipse-openj9/openj9/issues/15475): Code Execution
-+ [15569](https://github.com/eclipse-openj9/openj9/issues/15569): Code Execution
-+ [15476](https://github.com/eclipse-openj9/openj9/issues/15476): Garbage Collection
-+ [15592](https://github.com/eclipse-openj9/openj9/issues/15592): Garbage Collection
-+ [15575](https://github.com/eclipse-openj9/openj9/issues/15575): Garbage Collection
-+ [15534](https://github.com/eclipse-openj9/openj9/issues/15534): miscompilation
-+ [15369](https://github.com/eclipse-openj9/openj9/issues/15369): miscompilation
-+ [15306.1](https://github.com/eclipse-openj9/openj9/issues/15306#issue-1269628433): miscompilation
-+ [15306.3](https://github.com/eclipse-openj9/openj9/issues/15306#issuecomment-1196676217): miscompilation
-+ [15874](https://github.com/eclipse-openj9/openj9/issues/15874): miscompilation
-+ [15347.1](https://github.com/eclipse-openj9/openj9/issues/15347#issue-1273630629): miscompilation
-+ [15347.2](https://github.com/eclipse-openj9/openj9/issues/15347#issuecomment-1157737495): miscompilation
-+ [15349](https://github.com/eclipse-openj9/openj9/issues/15349): miscompilation
++ [15332](https://github.com/eclipse-openj9/openj9/issues/15332): Assertion Failure, Local Value Propagation
++ [15311](https://github.com/eclipse-openj9/openj9/issues/15311): Segmentation Fault, Global Value Propagation
++ [15364](https://github.com/eclipse-openj9/openj9/issues/15364): Segmentation Fault, Global Value Propagation
++ [15335](https://github.com/eclipse-openj9/openj9/issues/15335): Segmentation Fault, Loop Vectorization
++ [15474](https://github.com/eclipse-openj9/openj9/issues/15474): Segmentation Fault, Deoptimization
++ [15305](https://github.com/eclipse-openj9/openj9/issues/15305): Segmentation Fault, Register Allocation
++ [15363](https://github.com/eclipse-openj9/openj9/issues/15363): Segmentation Fault, Code Generation
++ [15599](https://github.com/eclipse-openj9/openj9/issues/15599): Assertion Failure, Code Generation
++ [15338](https://github.com/eclipse-openj9/openj9/issues/15338): Segmentation Fault, Recompilation
++ [15475](https://github.com/eclipse-openj9/openj9/issues/15475): Segmentation Fault, Garbage Collection
++ [15476](https://github.com/eclipse-openj9/openj9/issues/15476): Assertion Failure, Garbage Collection
++ [15592](https://github.com/eclipse-openj9/openj9/issues/15592): Segmentation Fault, Garbage Collection
++ [15575](https://github.com/eclipse-openj9/openj9/issues/15575): Assertion Failure, Garbage Collection
++ [17045](https://github.com/eclipse-openj9/openj9/issues/17045): Segmentation Fault, Garbage Collection
++ [17052.1](https://github.com/eclipse-openj9/openj9/issues/17052): Segmentation Fault, Garbage Collection
++ [15534](https://github.com/eclipse-openj9/openj9/issues/15534): Miscompilation
++ [15369](https://github.com/eclipse-openj9/openj9/issues/15369): Miscompilation
++ [15306.1](https://github.com/eclipse-openj9/openj9/issues/15306#issue-1269628433): Miscompilation
++ [15306.3](https://github.com/eclipse-openj9/openj9/issues/15306#issuecomment-1196676217): Miscompilation
++ [15874](https://github.com/eclipse-openj9/openj9/issues/15874): Miscompilation
++ [15347.1](https://github.com/eclipse-openj9/openj9/issues/15347#issue-1273630629): Miscompilation
++ [15347.2](https://github.com/eclipse-openj9/openj9/issues/15347#issuecomment-1157737495): Miscompilation
++ [15349](https://github.com/eclipse-openj9/openj9/issues/15349): Miscompilation
++ [17033](https://github.com/eclipse-openj9/openj9/issues/17033): Miscompilation, Store Sinking
++ [15477](https://github.com/eclipse-openj9/openj9/issues/15477): Segmentation Fault, Code Execution
++ [15569](https://github.com/eclipse-openj9/openj9/issues/15569): Assertion Failure, Code Execution
++ [17052.2](https://github.com/eclipse-openj9/openj9/issues/17052#issuecomment-1487991963): Segmentation Faults and Assertion Failures, Other JIT Components like Heap Allocation, JIT-INT Interaction, Synchronization
 
 ### ART
 
-+ [229134124](https://issuetracker.google.com/issues/229134124): P3, -,
-+ [230079540](https://issuetracker.google.com/issues/230079540): P2, -,
-+ [227427222](https://issuetracker.google.com/issues/227427222): P3, -,
-+ [226413323](https://issuetracker.google.com/issues/226413323): P3, -,
-+ [227365247](https://issuetracker.google.com/issues/227365247): P3, Loop Optimization,
-+ [230079537](https://issuetracker.google.com/issues/230079537): P2, -,
-+ [230079539](https://issuetracker.google.com/issues/230079539): P2, -,
-+ [229184394](https://issuetracker.google.com/issues/229184394): P3, -,
-+ [227382489](https://issuetracker.google.com/issues/227382489): P3, miscompilation, Code Generation
-+ [227365246](https://issuetracker.google.com/issues/227365246): P3, miscompilation, Code Generation
-+ [229134126](https://issuetracker.google.com/issues/229134126): P3, miscompilation
-+ [230635320](https://issuetracker.google.com/issues/230635320): P2, miscompilation
-+ [230635319](https://issuetracker.google.com/issues/230635319): P2, miscompilation
-+ [230631558](https://issuetracker.google.com/issues/230631558): P3, miscompilation
-+ [230635329](https://issuetracker.google.com/issues/230635329): P3, miscompilation
-+ [232742203](https://issuetracker.google.com/issues/232742203): P3, miscompilation
++ [229134124](https://issuetracker.google.com/issues/229134124): P3, Abort, -,
++ [230079540](https://issuetracker.google.com/issues/230079540): P2, Segmentation Fault, -,
++ [227427222](https://issuetracker.google.com/issues/227427222): P3, Segmentation Fault, -,
++ [226413323](https://issuetracker.google.com/issues/226413323): P3, Segmentation Fault, -,
++ [227365247](https://issuetracker.google.com/issues/227365247): P3, Segmentation Fault, Loop Optimization,
++ [230079537](https://issuetracker.google.com/issues/230079537): P2, Segmentation Fault, -,
++ [230079539](https://issuetracker.google.com/issues/230079539): P2, Segmentation Fault, -,
++ [229184394](https://issuetracker.google.com/issues/229184394): P3, Segmentation Fault, -,
++ [227382489](https://issuetracker.google.com/issues/227382489): P3, Miscompilation, Code Generation
++ [227365246](https://issuetracker.google.com/issues/227365246): P3, Miscompilation, Code Generation
++ [229134126](https://issuetracker.google.com/issues/229134126): P3, Miscompilation
++ [230635320](https://issuetracker.google.com/issues/230635320): P2, Miscompilation
++ [230635319](https://issuetracker.google.com/issues/230635319): P2, Miscompilation
++ [230631558](https://issuetracker.google.com/issues/230631558): P3, Miscompilation
++ [230635329](https://issuetracker.google.com/issues/230635329): P3, Miscompilation
++ [232742203](https://issuetracker.google.com/issues/232742203): P3, Miscompilation
 
 ### Graal
 
-+ [4801](https://github.com/oracle/graal/issues/4801)
++ [4801](https://github.com/oracle/graal/issues/4801): Miscompilation
++ [6350](https://github.com/oracle/graal/issues/6350): Segmentation Fault, Code Execution
++ [6351](https://github.com/oracle/graal/issues/6351): Segmentation Fault, Code Execution
 
 
 
