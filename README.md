@@ -100,7 +100,7 @@ $ java -jar artemis.jar -h
 
 ## Bug-showcases
 
-Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SIGSEGV), fatal arithmetic error (SIGFPE), emergency abort (SIGABRT), assertion failures, mis-compilations, to performance issues. These bugs affects quite a lot VM compoments. We list some of them here. More to come.
+Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SIGSEGV), fatal arithmetic error (SIGFPE), emergency abort (SIGABRT), assertion failures, mis-compilations, to performance issues. These bugs affect quite a lot VM components. We list some of them here. More to come.
 
 
 ### HotSpot
