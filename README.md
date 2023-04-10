@@ -118,7 +118,7 @@ Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SI
 + [JDK-8288558](https://bugs.openjdk.org/browse/JDK-8288558): P4, C2, Assertion Failure, Ideal Loop Optimization
 + [JDK-8288198](https://bugs.openjdk.org/browse/JDK-8288198): P4, C2, Assertion Failure, Ideal Loop Optimization
 + [JDK-8288106](https://bugs.openjdk.org/browse/JDK-8288106): P4, C2, Assertion Failure, Ideal Loop Optimization
-+ [JDK-XXXXXXX](https://bugs.openjdk.org/browse/JDK-XXXXXXX): Px, C2, Assertion Failure, Ideal Loop Optimization
++ [JDK-8305797](https://bugs.openjdk.org/browse/JDK-8305797): P4, C2, Assertion Failure, Ideal Loop Optimization
 + [JDK-8288187](https://bugs.openjdk.org/browse/JDK-8288187): P4, C2, Assertion Failure, Global Constant Propagation
 + [JDK-8288206](https://bugs.openjdk.org/browse/JDK-8288206): P4, C2, Assertion Failure, Global Value Numbering
 + [JDK-8288587](https://bugs.openjdk.org/browse/JDK-8288587): P4, C2, Assertion Failure, Global Value Numbering
