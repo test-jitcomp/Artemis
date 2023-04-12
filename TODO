@@ -1,0 +1,14 @@
+1. Support random program generation without skeletons (loop and statement),
+   code bricks, and initializers.
+
+   For a general framework, we need to abstract CodeSyn as a general
+   synthesizer interface providing synExpr(), synStmt(), SynCodeSeg(),
+   symBlock(), synLoop(), etc. The skeleton based CodeSyn then becomes
+   SklCodeSyn and we should provide RndCodeSyn the synthesizer that generates
+   programs from scratch.
+
+   For RndCodeSyn, we have to synthesize code that can trigger diverse opt
+   passes in a JIT compiler. For this, refer to CSmith for a general generation,
+   YARPGen v.1 for scalar optimizations, and YARPGen v.2 for loop optimizations
+   especially various loop idioms leveraging loop sequence, nests, and arrays.
+
