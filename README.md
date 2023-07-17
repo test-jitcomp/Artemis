@@ -1,12 +1,10 @@
-<!-- TODO Add logo, make public, and release the draft -->
-
 <p align="center">
     <img width="320" alt="logo" align="center" src=".github/artemis.png">
 </p>
 
-<!-- <p align="center">
+<p align="center">
     <a href="https://github.com/test-jitcomp/Artemis/actions" alt="Build status">
-        <img src="https://img.shields.io/github/workflow/status/test-jitcomp/Artemis/Build%20and%20archive%20check" />
+        <img src="https://img.shields.io/github/actions/workflow/status/test-jitcomp/Artemis/build.yml" />
     </a>
     <a href="https://semver.org" alt="Version">
         <img src="https://img.shields.io/github/v/release/test-jitcomp/Artemis" />
@@ -18,7 +16,7 @@
         <img src="https://img.shields.io/github/license/test-jitcomp/Artemis" />
     </a>
 </p>
- -->
+
 
 
 
@@ -35,7 +33,23 @@ A JIT compiler bug is a bug that otherwise *won't* manifest if the JIT compiler 
 
 
 
+## Requirements
+
+Artemis is tested and developed on Ubuntu and macOS platforms with the following software/hardware requirements.
+
+- Java: >= 11
+- Python: >= 3.9.0
+- Ruby: >= 2.7.0
+
+
+
 ## Installation
+
+Install Java, Python, and Ruby. For Ubuntu:
+
+```
+$ sudo apt update && apt install -y openjdk-11-jdk python3 python3-pip ruby-full
+```
 
 Download Artemis from the [Releases](https://github.com/test-jitcomp/Artemis/releases) page and unzip to a directory say `/tmp/artemis`:
 
