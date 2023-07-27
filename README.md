@@ -23,7 +23,7 @@
 Artemis is a Java program mutator specifically designed to test JVM's JIT compilers.
 It also provides a fuzzing framework called [artemi](./artemi) to stress-test JVM's JIT compilers.
 Given a set of seed Java programs, Artemis generates a set of mutants for testing.
-Artemis has already found **60+** JVM's JIT compiler bugs in three widely-used production JVMs:
+Artemis has already found **80+** JVM's JIT compiler bugs in three widely-used production JVMs:
 [HotSpot](https://github.com/openjdk),
 [OpenJ9](https://github.com/eclipse-openj9/openj9),
 and [Android Runtime](https://android.googlesource.com/platform/art/).
@@ -118,6 +118,8 @@ Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SI
 
 It should be noted that, to avoid flooding their issue trackers, we discussed with the corresponding VM developers and reported some difficult-to-reproduce, flaky tests into a single issue. This kept the number of bug reports under a small limit.
 
+In addition, some bugs listed below were made internal by the respective JVM developers and are no longer publicly accessible for security reasons.
+
 ### HotSpot
 
 + [JDK-8287223](https://bugs.openjdk.org/browse/JDK-8287223): P3, C1, Assertion Failure, Inlining
@@ -185,14 +187,14 @@ It should be noted that, to avoid flooding their issue trackers, we discussed wi
 
 ### ART
 
-+ [229134124](https://issuetracker.google.com/issues/229134124): P3, Abort, -,
-+ [230079540](https://issuetracker.google.com/issues/230079540): P2, Segmentation Fault, -,
-+ [227427222](https://issuetracker.google.com/issues/227427222): P3, Segmentation Fault, -,
-+ [226413323](https://issuetracker.google.com/issues/226413323): P3, Segmentation Fault, -,
-+ [227365247](https://issuetracker.google.com/issues/227365247): P3, Segmentation Fault, Loop Optimization,
-+ [230079537](https://issuetracker.google.com/issues/230079537): P2, Segmentation Fault, -,
-+ [230079539](https://issuetracker.google.com/issues/230079539): P2, Segmentation Fault, -,
-+ [229184394](https://issuetracker.google.com/issues/229184394): P3, Segmentation Fault, -,
++ [229134124](https://issuetracker.google.com/issues/229134124): P3, Abort
++ [230079540](https://issuetracker.google.com/issues/230079540): P2, Segmentation Fault
++ [227427222](https://issuetracker.google.com/issues/227427222): P3, Segmentation Fault
++ [226413323](https://issuetracker.google.com/issues/226413323): P3, Segmentation Fault
++ [227365247](https://issuetracker.google.com/issues/227365247): P3, Segmentation Fault, Loop Optimization
++ [230079537](https://issuetracker.google.com/issues/230079537): P2, Segmentation Fault
++ [230079539](https://issuetracker.google.com/issues/230079539): P2, Segmentation Fault
++ [229184394](https://issuetracker.google.com/issues/229184394): P3, Segmentation Fault
 + [227382489](https://issuetracker.google.com/issues/227382489): P3, Miscompilation, Code Generation
 + [227365246](https://issuetracker.google.com/issues/227365246): P3, Miscompilation, Code Generation
 + [229134126](https://issuetracker.google.com/issues/229134126): P3, Miscompilation
