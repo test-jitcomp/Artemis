@@ -23,10 +23,11 @@
 Artemis is a Java program mutator specifically designed to test JVM's JIT compilers.
 It also provides a fuzzing framework called [artemi](./artemi) to stress-test JVM's JIT compilers.
 Given a set of seed Java programs, Artemis generates a set of mutants for testing.
-Artemis has already found **80+** JVM's JIT compiler bugs in three widely-used production JVMs:
+Artemis has already found **80+** JVM's JIT compiler bugs in four widely-used production JVMs:
 [HotSpot](https://github.com/openjdk),
 [OpenJ9](https://github.com/eclipse-openj9/openj9),
-and [Android Runtime](https://android.googlesource.com/platform/art/).
+[Android Runtime](https://android.googlesource.com/platform/art/),
+and [GraalVM](https://github.com/oracle/graal).
 
 **JIT compiler bug**:
 A JIT compiler bug is a bug that otherwise *won't* manifest if the JIT compiler is disabled for example by the `-Xint` option in prevalent JVMs.
@@ -215,8 +216,25 @@ In addition, some bugs listed below were made internal by the respective JVM dev
 ## Contributing
 
 1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
-2. For bugs/issues/questions/feature requests please file an issue. 
+2. For technical contributions, please first navigate to [our paper](https://dl.acm.org/doi/abs/10.1145/3600006.3613140) for technical details, or [our preprint](https://connglli.github.io/pdfs/artemis_sosp23_preprint.pdf) if the paper is not yet available.
+3. For bugs/issues/questions/feature requests, please [file an issue](https://github.com/test-jitcomp/Artemis/issues/new).
 
+## Cite Us
+
+Artemis is initially a research work with the following SOSP 2023 paper.
+Please consider citing us if you used Artemis in your work!
+
+```
+@inproceedings{artemis_sosp23,
+  author = {Li, Cong and Jiang, Yanyan and Xu, Chang and Su, Zhendong},
+  title = {Validating JIT Compilers via Compilation Space Exploration},
+  booktitle = {Proceedings of the 29th Symposium on Operating Systems Principles},
+  year = {2023},
+  pages = {66–79},
+  numpages = {14},
+  series = {SOSP '23}
+}
+```
 
 
 ## License
