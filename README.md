@@ -12,6 +12,9 @@
     <a href="https://google.github.io/styleguide/javaguide.html" alt="Code style">
         <img src="https://img.shields.io/badge/style-Google-blue" />
     </a>
+    <a href="https://dl.acm.org/doi/10.1145/3600006.3613140" alt="SOSP 2023">
+        <img src=https://img.shields.io/badge/2023-SOSP-8A2BE2" />
+    </a>
     <a href="https://opensource.org/licenses/MIT" alt="License">
         <img src="https://img.shields.io/github/license/test-jitcomp/Artemis" />
     </a>
@@ -113,7 +116,7 @@ $ java -jar artemis.jar -h
 
 
 
-## Bug-showcases
+## Bug Showcases
 
 Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SIGSEGV), fatal arithmetic error (SIGFPE), emergency abort (SIGABRT), assertion failures, mis-compilations, to performance issues. These bugs affect quite a few VM components. We list some of them here. More to come.
 
@@ -219,7 +222,7 @@ In addition, some bugs listed below were made internal by the respective JVM dev
 2. For technical contributions, please first navigate to [our paper](https://dl.acm.org/doi/abs/10.1145/3600006.3613140) for technical details, or [our preprint](https://connglli.github.io/pdfs/artemis_sosp23_preprint.pdf) if the paper is not yet available.
 3. For bugs/issues/questions/feature requests, please [file an issue](https://github.com/test-jitcomp/Artemis/issues/new).
 
-## Cite Us
+## Citing Us
 
 Artemis is initially a research work with the following SOSP 2023 paper.
 Please consider citing us if you used Artemis in your work!
