@@ -37,7 +37,7 @@ A JIT compiler bug is a bug that otherwise *won't* manifest if the JIT compiler 
 
 
 
-## Requirements
+## 💡 Requirements
 
 Artemis is tested and developed on Ubuntu and macOS platforms with the following software/hardware requirements.
 
@@ -47,7 +47,7 @@ Artemis is tested and developed on Ubuntu and macOS platforms with the following
 
 
 
-## Installation
+## 📦 Installation
 
 Install Java, Python, and Ruby. For Ubuntu:
 
@@ -78,7 +78,9 @@ $ pip install -r requirements.txt
 
 
 
-## Usage: artemi
+## 🚀 Fuzzing JVMs
+
+The artemi framework is designed to have no command line options except for a fuzzing configuration file called `artemi.yaml`:
 
 1. **Edit artemi.yaml**. See [`artemi.ex.yaml`](./artemi/artemi.ex.yaml) for an example.
     + Do fill every option marked as `<required-to-change>` with correct value. But for the `jvm` and `generator` option, only fill those related despite marked as `<required-to-change>`.
@@ -106,7 +108,7 @@ $ pip install -r requirements.txt
 
 
 
-## Usage: Artemis
+## ☄️ Mutating Programs
 
 Besides the artemi framework, Artemis itself can be used as a seperate program mutator. It takes as input a Java source file, and outputs a Java source file with mutations specifically designed to test JIT compilers. See required arguments and available options by `-h`.
 
@@ -116,7 +118,7 @@ $ java -jar artemis.jar -h
 
 
 
-## Bug Showcases
+## 🐞 Bug Showcases
 
 Artemis is fruitful in finding diverse bugs ranging from segmentation faults (SIGSEGV), fatal arithmetic error (SIGFPE), emergency abort (SIGABRT), assertion failures, mis-compilations, to performance issues. These bugs affect quite a few VM components. We list some of them here. More to come.
 
@@ -216,13 +218,13 @@ In addition, some bugs listed below were made internal by the respective JVM dev
 
 
 
-## Contributing
+## 👨‍💻‍ Contributing
 
 1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
 2. For technical contributions, please first navigate to [our paper](https://dl.acm.org/doi/abs/10.1145/3600006.3613140) for technical details, or [our preprint](https://connglli.github.io/pdfs/artemis_sosp23_preprint.pdf) if the paper is not yet available.
 3. For bugs/issues/questions/feature requests, please [file an issue](https://github.com/test-jitcomp/Artemis/issues/new).
 
-## Citing Us
+## 🖋 Citing Us
 
 Artemis is initially a research work with the following SOSP 2023 paper.
 Please consider citing us if you used Artemis in your work!
@@ -240,7 +242,7 @@ Please consider citing us if you used Artemis in your work!
 ```
 
 
-## License
+## 🧾 License
 
 ```
 MIT License
