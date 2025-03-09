@@ -223,7 +223,7 @@ In addition, some bugs listed below were made internal by the respective JVM dev
 ## 👨‍💻‍ Contributing
 
 1. Artemis is developed following Google's Java style. Check [this](https://google.github.io/styleguide/javaguide.html) and the [eclipse-formatter](./eclipse-formatter.xml) file.
-2. For technical contributions, please first navigate to [our paper](https://dl.acm.org/doi/abs/10.1145/3600006.3613140) for technical details, or [our preprint](https://connglli.github.io/pdfs/artemis_sosp23_preprint.pdf) if the paper is not yet available.
+2. For technical contributions, please first navigate to [our paper](https://dl.acm.org/doi/abs/10.1145/3600006.3613140) for technical details.
 3. For bugs/issues/questions/feature requests, please [file an issue](https://github.com/test-jitcomp/Artemis/issues/new).
 
 ## 🖋 Citing Us
@@ -269,3 +269,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+
+## 🤝 Acknowledgements
+
+1. JavaFuzzer (on which this project is based)
+2. Tiana Xing (who sketches the logo)
