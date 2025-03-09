@@ -15,7 +15,7 @@
         <img src="https://img.shields.io/badge/style-Google-blue" />
     </a>
     <a href="https://dl.acm.org/doi/10.1145/3600006.3613140" alt="SOSP 2023">
-        <img src=https://img.shields.io/badge/2023-SOSP-8A2BE2" />
+        <img src="https://img.shields.io/badge/2023-SOSP-8A2BE2" />
     </a>
     <a href="https://opensource.org/licenses/MIT" alt="License">
         <img src="https://img.shields.io/github/license/test-jitcomp/Artemis" />
